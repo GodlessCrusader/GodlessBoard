@@ -13,17 +13,17 @@ namespace GodlessBoard.Pages.Account
         [BindProperty]
         public Credential Credential { get; set; }
         private readonly IConfiguration _configuration;
-        public LoginModel(MyDbContext context,IConfiguration configuration, Credential credential)
+        public LoginModel(MyDbContext context,IConfiguration configuration)
         {
             _context = context;
             _configuration=configuration;
-            Credential = credential;
+  
         }
 
         public void OnGet()
         {
         }
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid) 
                 return Page();
@@ -37,7 +37,7 @@ namespace GodlessBoard.Pages.Account
                 return BadRequest("There is no such Email-Password combination.");
             else
             {
-                hg.GenerateJwt(user.First());
+                await Auth.Identify(HttpContext, Credential.UserName, user.First().DisplayName);
                 return RedirectToPage("/Index");
             }
 

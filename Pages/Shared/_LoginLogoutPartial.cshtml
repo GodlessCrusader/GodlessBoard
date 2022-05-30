@@ -1,0 +1,15 @@
+﻿@{
+    if(!User.Identity.IsAuthenticated)
+    {
+        <a asp-page="/Account/Login">Login</a>
+        <a asp-page="/Account/Register">Register</a>
+    }
+    else
+    {
+        <label>Hello, @User.Identity.Name</label>
+        <form method="post" asp-page="/Account/Logout">
+            <button type="submit">Logout</button>    
+        </form>        
+    }
+}
+

@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddAuthentication().AddCookie("GodlessCookie", options =>
+builder.Services.AddAuthentication("GodlessCookie").AddCookie("GodlessCookie", options =>
 options.Cookie.Name = "GodlessCookie"
 ); 
 var connectionString = builder.Configuration.GetConnectionString("MyDbContextConnection"); ;
@@ -27,6 +27,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
