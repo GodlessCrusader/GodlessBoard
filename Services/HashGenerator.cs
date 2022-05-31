@@ -1,4 +1,4 @@
-﻿using GodlessBoard.Data;
+﻿using GodlessBoard.Models;
 using GodlessBoard.Pages.Account;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

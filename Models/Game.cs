@@ -1,8 +1,8 @@
-﻿namespace GodlessBoard.Data
+﻿namespace GodlessBoard.Models
 {
     public class Game
     {
-        public int Id { get; set; } 
+        public int Id { get; set; }
         public string Name { get; set; }
         public string? PicUrl { get; set; }
         public string? Bio { get; set; }

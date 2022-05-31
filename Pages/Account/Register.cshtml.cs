@@ -1,4 +1,5 @@
 using GodlessBoard.Data;
+using GodlessBoard.Models;
 using GodlessBoard.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;

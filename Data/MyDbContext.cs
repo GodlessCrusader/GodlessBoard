@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using GodlessBoard.Models;
+using Microsoft.EntityFrameworkCore;
 namespace GodlessBoard.Data
 {
     public class MyDbContext : DbContext

@@ -1,4 +1,4 @@
-﻿namespace GodlessBoard.Data
+﻿namespace GodlessBoard.Models
 {
     public class UserGameRole
     {

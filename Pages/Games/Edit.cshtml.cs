@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using GodlessBoard.Data;
+using GodlessBoard.Models;
 
 namespace GodlessBoard.Pages.Games
 {
