@@ -8,7 +8,14 @@
             <hr>
             <h5>Display name</h5>
             <label asp-for="@Model.CurrentUser.DisplayName"></label>
-            <img source="@Model.CurrentUser.ProfilePicUrl">
+             @if(Model.CurrentUser.ProfilePicUrl != null){
+                <img source="@Model.CurrentUser.ProfilePicUrl">
+            }
+            else
+            {
+                <img source="defaultUserPic.png">
+            }
+
             <hr>
             <h5>Email/Login</h5>
             <label asp-for="@Model.CurrentUser.UserName"></label>
