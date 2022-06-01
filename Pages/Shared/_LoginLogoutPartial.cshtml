@@ -1,4 +1,8 @@
-﻿@{
+﻿@using GodlessBoard.Services;
+@{
+
+    string userName, displayName;
+    
     if(!User.Identity.IsAuthenticated)
     {
         <a asp-page="/Account/Login">Login</a>
@@ -6,7 +10,8 @@
     }
     else
     {
-        <label>Hello, @User.Identity.Name</label>
+        Auth.ParseIdentityName(User.Identity.Name, out userName, out displayName);
+        <label>Hello, @displayName</label>
         <form method="post" asp-page="/Account/Logout">
             <button type="submit">Logout</button>    
         </form>        

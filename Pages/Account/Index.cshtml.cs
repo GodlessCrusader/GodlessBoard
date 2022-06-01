@@ -1,7 +1,9 @@
 using GodlessBoard.Data;
 using GodlessBoard.Models;
+using GodlessBoard.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Security.Claims;
 
 namespace GodlessBoard.Pages.Account
 {
@@ -17,9 +19,11 @@ namespace GodlessBoard.Pages.Account
         {
             if(User.Identity.IsAuthenticated)
             {
-                CurrentUser = (from user in _context.Users
-                              where user.UserName == User.Identity.Name
-                              select user).SingleOrDefault();
+                string userName, displayName;
+                Auth.ParseIdentityName(User.Identity.Name, out userName, out displayName);
+                CurrentUser = (from currentUser in _context.Users
+                              where currentUser.UserName == userName
+                              select currentUser).SingleOrDefault();
                 if(CurrentUser == null)
                 {
 
