@@ -1,0 +1,37 @@
+﻿@using GodlessBoard.Data
+@using GodlessBoard.Services
+@using Microsoft.AspNetCore.Components.Forms
+@inject IConfiguration Configuration
+@inject MyDbContext DbContext
+@inject IHttpContextAccessor HttpContextAcessor
+
+<InputFile OnChange="UploadImage"/>
+<button @onclick="UploadImage">Submit</button>
+@code {
+    private async Task UploadImage(InputFileChangeEventArgs e)
+    {
+        
+        var path = Configuration.GetSection("AppSettings:MediaFilePath") + "/Images";
+        using(FileStream fs = new FileStream(path,FileMode.CreateNew))
+        {
+
+            await e.File.OpenReadStream().CopyToAsync(fs);
+
+            var userName = Auth.GetUserName(HttpContextAcessor.HttpContext.User.Identity.Name);
+            var user = (from u in DbContext.Users
+                        where u.UserName == userName
+                        select u).SingleOrDefault();
+            var media = new Models.Media()
+            {
+                Name = e.File.Name,
+                Type = Models.MediaType.Image,
+                Weight = e.File.Size,
+                Owner = user
+            };
+            DbContext.Media.Add(media);
+
+            user.Medias.Add(media);
+            DbContext.SaveChanges();
+        }
+    }
+}

@@ -8,7 +8,8 @@
             <hr>
             <h5>Display name</h5>
             <textarea asp-for="@Model.CurrentUser.DisplayName"></textarea>
-            <img source="@Model.CurrentUser.ProfilePicUrl">
+            <img src="@Model.CurrentUser.ProfilePicUrl" height="100" width="100">
+             <EditAvatarFileDialogComponent>@(await Html.RenderComponentAsync<EditAvatarFileDialogComponent>(RenderMode.ServerPrerendered))</EditAvatarFileDialogComponent>
             <hr>
             <h5>About me</h5>
             <label asp-for="@Model.CurrentUser.Bio"></label>

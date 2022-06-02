@@ -7,5 +7,6 @@
         public string? PicUrl { get; set; }
         public string? Bio { get; set; }
         public ICollection<User> Players { get; set; }
+        public ICollection<Media> Medias { get; set; }
     }
 }

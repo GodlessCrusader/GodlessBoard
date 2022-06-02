@@ -24,5 +24,9 @@ namespace GodlessBoard.Services
             Email = words[0];
             DisplayName = words[1];
         }
+        public static string GetUserName(string userIdentity)
+        {
+            return userIdentity.Split('|')[0];
+        }
     }
 }

@@ -5,11 +5,11 @@ VisualStudioVersion = 17.2.32519.379
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GodlessBoard", "GodlessBoard.csproj", "{6599B16B-F1C8-4B16-89E6-FA28DF0B4171}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InteractiveBoard.Server", "..\InteractiveBoard\Server\InteractiveBoard.Server.csproj", "{E3752EAD-D4FF-4025-A841-24407EE194B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InteractiveBoard.Server", "..\InteractiveBoard\Server\InteractiveBoard.Server.csproj", "{E3752EAD-D4FF-4025-A841-24407EE194B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InteractiveBoard.Client", "..\InteractiveBoard\Client\InteractiveBoard.Client.csproj", "{33F8D541-6013-4EDF-A2DA-12FA942526FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InteractiveBoard.Client", "..\InteractiveBoard\Client\InteractiveBoard.Client.csproj", "{33F8D541-6013-4EDF-A2DA-12FA942526FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InteractiveBoard.Shared", "..\InteractiveBoard\Shared\InteractiveBoard.Shared.csproj", "{0253A042-D735-488F-ADDB-89328BB05942}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InteractiveBoard.Shared", "..\InteractiveBoard\Shared\InteractiveBoard.Shared.csproj", "{0253A042-D735-488F-ADDB-89328BB05942}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

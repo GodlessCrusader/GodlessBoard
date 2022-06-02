@@ -1,10 +1,14 @@
 using GodlessBoard.Data;
+using GodlessBoard.Pages.Account;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddAuthentication("GodlessCookie").AddCookie("GodlessCookie", options =>
 options.Cookie.Name = "GodlessCookie"
 ); 
@@ -29,7 +33,6 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapRazorPages();
 
 app.Run();

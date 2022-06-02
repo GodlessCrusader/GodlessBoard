@@ -11,5 +11,8 @@
         public string? ProfilePicUrl { get; set; }
         public string? Bio { get; set; }
         public ICollection<Game> Games { get; set; }
+        public ICollection<Media> Medias { get; set; }
+        public int MaxMediaWeight { get; set; } = 300;
+        public int CurrentMediaWeight { get; set; } = 0;
     }
 }

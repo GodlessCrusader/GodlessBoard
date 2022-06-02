@@ -9,11 +9,11 @@
             <h5>Display name</h5>
             <label asp-for="@Model.CurrentUser.DisplayName"></label>
              @if(Model.CurrentUser.ProfilePicUrl != null){
-                <img source="@Model.CurrentUser.ProfilePicUrl">
+                <img src="@Model.CurrentUser.ProfilePicUrl" height="100" width="100">
             }
             else
             {
-                <img source="defaultUserPic.png">
+                <img src="defaultUserPic.png" height="100" width="100">
             }
 
             <hr>

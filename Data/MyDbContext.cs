@@ -11,6 +11,7 @@ namespace GodlessBoard.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Game> Games { get; set; }
         public DbSet<UserGameRole> UserGameRole { get; set; }
+        public DbSet<Media> Media { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
