@@ -1,37 +1,39 @@
 ﻿@using GodlessBoard.Data
 @using GodlessBoard.Services
 @using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
 @inject IConfiguration Configuration
 @inject MyDbContext DbContext
 @inject IHttpContextAccessor HttpContextAcessor
+@inject HttpClient client
+@page "/"
 
 <InputFile OnChange="UploadImage"/>
-<button @onclick="UploadImage">Submit</button>
+<button @onclick="@ChangeButtonText">@buttonText</button>
 @code {
+    public string buttonText { get; set; } = "buttonText";
+    private void ChangeButtonText()
+    {
+        buttonText = "sas";
+    }
     private async Task UploadImage(InputFileChangeEventArgs e)
     {
+        try
+        {
+            var fileStream = e.File.OpenReadStream();
+            var fileContent =  new StreamContent(fileStream);
+     
+        var response = 
+                await client.PostAsync("https://localhost:7119/MediaUpload", 
+                fileContent);
+        }
         
-        var path = Configuration.GetSection("AppSettings:MediaFilePath") + "/Images";
-        using(FileStream fs = new FileStream(path,FileMode.CreateNew))
+        catch (Exception ex)
         {
 
-            await e.File.OpenReadStream().CopyToAsync(fs);
-
-            var userName = Auth.GetUserName(HttpContextAcessor.HttpContext.User.Identity.Name);
-            var user = (from u in DbContext.Users
-                        where u.UserName == userName
-                        select u).SingleOrDefault();
-            var media = new Models.Media()
-            {
-                Name = e.File.Name,
-                Type = Models.MediaType.Image,
-                Weight = e.File.Size,
-                Owner = user
-            };
-            DbContext.Media.Add(media);
-
-            user.Medias.Add(media);
-            DbContext.SaveChanges();
+            Console.Write(ex.ToString);
         }
+       
+        
     }
 }

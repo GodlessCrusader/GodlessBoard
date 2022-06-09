@@ -1,10 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="UserMediaData\**" />
+    <Content Remove="UserMediaData\**" />
+    <EmbeddedResource Remove="UserMediaData\**" />
+    <None Remove="UserMediaData\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="Pages\Shared\_LoginLogoutPartial.cshtml.cs" />
@@ -15,6 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="BlazorInputFile" Version="0.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.12" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.5">
       <PrivateAssets>all</PrivateAssets>
@@ -34,8 +43,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="UserMediaData\Images\" />
-    <Folder Include="UserMediaData\Audio\" />
+    <Folder Include="MediaFiles\Images\" />
   </ItemGroup>
 
 </Project>

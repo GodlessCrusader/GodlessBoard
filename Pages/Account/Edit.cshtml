@@ -1,27 +1,33 @@
 ﻿@page
+
 @model GodlessBoard.Pages.Account.EditModel
+<head>123</head>
+<base href="/"></base>
 @{
     if(User.Identity.IsAuthenticated)
     {
-        <div>
-            <h3>Your profile:</h3><a asp-page="/Account/Edit">Edit</a>
-            <hr>
-            <h5>Display name</h5>
-            <textarea asp-for="@Model.CurrentUser.DisplayName"></textarea>
-            <img src="@Model.CurrentUser.ProfilePicUrl" height="100" width="100">
-             <EditAvatarFileDialogComponent>@(await Html.RenderComponentAsync<EditAvatarFileDialogComponent>(RenderMode.ServerPrerendered))</EditAvatarFileDialogComponent>
-            <hr>
-            <h5>About me</h5>
-            <label asp-for="@Model.CurrentUser.Bio"></label>
-            
-        </div>       
+    <div>
+                        <h3>Your profile:</h3><a asp-page="/Account/Edit">Edit</a>
+                        <hr>
+                        <h5>Display name</h5>
+                        <textarea asp-for="@Model.CurrentUser.DisplayName"></textarea>
+                        <img src="@Model.CurrentUser.ProfilePicUrl" height="100" width="100">
+                         <component type="typeof(EditAvatarFileDialogComponent)" render-mode="ServerPrerendered" ></component>
+                         
+                        <hr>
+                        <h5>About me</h5>
+                        <label asp-for="@Model.CurrentUser.Bio"></label>
+                        
+    </div>       
     }
     else
     {
-         <div>
-            <h5>You are not logged in. Please log in existing account or register a new one!</h5>
-            <a asp-page="/Account/Login">Log in</a>
-            <a asp-page="/Account/Register">Register</a>
-         </div>
+    <div>
+                        <h5>You are not logged in. Please log in existing account or register a new one!</h5>
+                        <a asp-page="/Account/Login">Log in</a>
+                        <a asp-page="/Account/Register">Register</a>
+    </div>
     }
 }
+<script src="_framework/blazor.webassembly.js"></script>
+<script src="/_framework/aspnetcore-browser-refresh.js"></script>
