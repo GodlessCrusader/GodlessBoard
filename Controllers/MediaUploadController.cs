@@ -17,37 +17,38 @@ namespace GodlessBoard.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult Index()
         {
             return RedirectToPage("/Account/Index");
 
         }
         [HttpPost]
-        public async Task Post([FromForm] IFormFile file)
+        public async Task Post(IEnumerable<IFormFile> inputStream)
         {
+            var file = inputStream.FirstOrDefault();
             try
             {
-                var path = "";
+                var path = "~/MediaFiles/Images";
                 using (FileStream fs = new FileStream(path, FileMode.CreateNew))
                 {
 
                     await file.CopyToAsync(fs);
 
-                    var userName = Auth.GetUserName(User.Identity.Name);
-                    var user = (from u in _context.Users
-                                where u.UserName == userName
-                                select u).SingleOrDefault();
-                    var media = new Media()
-                    {
-                        Name = file.Name,
-                        Type = Models.MediaType.Image,
-                        Weight = file.Length,
-                        Owner = user
-                    };
-                    _context.Media.Add(media);
+                    //var userName = Auth.GetUserName(User.Identity.Name);
+                    //var user = (from u in _context.Users
+                    //            where u.UserName == userName
+                    //            select u).SingleOrDefault();
+                    //var media = new Media()
+                    //{
+                    //    Name = inputStream.,
+                    //    Type = Models.MediaType.Image,
+                    //    Weight = file.Length,
+                    //    Owner = user
+                    //};
+                    //_context.Media.Add(media);
 
-                    user.Medias.Add(media);
-                    _context.SaveChanges();
+                    //user.Medias.Add(media);
+                    //_context.SaveChanges();
                 }
             }
             catch (Exception e)
