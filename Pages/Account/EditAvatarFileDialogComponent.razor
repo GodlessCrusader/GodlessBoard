@@ -5,16 +5,23 @@
 @using Microsoft.AspNetCore.Components.Web
 @using System.Net.Http.Headers
 @inject IConfiguration Configuration
-@inject MyDbContext DbContext
+@inject MyDbContext _context
 @inject IHttpContextAccessor HttpContextAcessor
 @inject HttpClient client
 @page "/"
-<form><InputFile OnChange="UploadImage"/></form>
+<form>
+    <label>Profile picture</label>
+    <InputFile />
+    <button @onclick="ChangeButtonText" class="btn btn-submit">Change profile picture</button>
+    <span class="text-dngr">@SpanText</span>
+</form>
 <label>@exception</label>
 <button @onclick="@ChangeButtonText">@buttonText</button>
 @code {
+    [Parameter]
+    public User? CurrentUser { get; set; }
+    public string SpanText { get; set; } = string.Empty;
     string exception = string.Empty;
-    private UploadResult uploadResult = new();
     public string buttonText { get; set; } = "buttonText";
     private void ChangeButtonText()
     {
@@ -35,7 +42,37 @@
         exception = ex.ToString();
     }
        */
-        var fs = new FileStream(@"D:\pseudoroot\visualCodeProjects\prog\MediaFiles\Images\" + e.File.Name,FileMode.Create);
-        await e.File.OpenReadStream().CopyToAsync(fs);
+
+    
+       if(!e.File.ContentType.Contains("image") || CurrentUser == null)
+       {
+           SpanText = "Wrong file type";
+           return;
+       }
+       else if( CurrentUser == null)
+       {
+           SpanText = "Authorization error. Please log in or sign up a new account";
+           return;
+       }
+       else if(CurrentUser.MaxMediaWeight - CurrentUser.CurrentMediaWeight < e.File.Size)
+       {
+           SpanText = "Media storage size limitation reached";
+           return;
+       }
+       else
+       {
+            var mediaName = System.IO.Path.GetRandomFileName + Path.GetExtension(e.File.Name);
+            CurrentUser.Medias.Add(new Media(){
+                Name = mediaName,
+                Type = MediaType.Image,
+                Owner = CurrentUser
+           }
+
+            );
+            var imageUploadPath = @"~\MediaFiles\Images\" + mediaName;
+            var fs = new FileStream( imageUploadPath ,FileMode.Create);
+            await e.File.OpenReadStream().CopyToAsync(fs);
+       }
+        
     }
 }

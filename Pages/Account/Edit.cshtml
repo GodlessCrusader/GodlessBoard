@@ -12,7 +12,7 @@
                         <h5>Display name</h5>
                         <textarea asp-for="@Model.CurrentUser.DisplayName"></textarea>
                         <img src="@Model.CurrentUser.ProfilePicUrl" height="100" width="100">
-                         <component type="typeof(EditAvatarFileDialogComponent)" render-mode="ServerPrerendered" ></component>
+                         <component type="typeof(EditAvatarFileDialogComponent)" param-CurrentUser = "@Model.CurrentUser" render-mode="ServerPrerendered" ></component>
                          
                         <hr>
                         <h5>About me</h5>
