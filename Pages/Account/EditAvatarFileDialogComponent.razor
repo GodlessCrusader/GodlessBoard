@@ -11,8 +11,8 @@
 @page "/"
 <form>
     <label>Profile picture</label>
-    <InputFile />
-    <button @onclick="ChangeButtonText" class="btn btn-submit">Change profile picture</button>
+    <InputFile OnChange="UploadImage" />
+    <button @onclick="ChangeButtonText">Change profile picture</button>
     <span class="text-dngr">@SpanText</span>
 </form>
 <label>@exception</label>
@@ -28,51 +28,38 @@
         buttonText = "sas";
     }
     private async Task UploadImage(InputFileChangeEventArgs e)
-    {/*
-    var imageContent = new StreamContent(e.File.OpenReadStream());
-    imageContent.Headers.ContentLength = e.File.Size;
-    imageContent.Headers.ContentType = new MediaTypeHeaderValue(e.File.ContentType);
-    imageContent.Headers.ContentEncoding.Add("UTF-8");
-    try
     {
-        await client.PostAsync("https://localhost:7119/MediaUpload", imageContent);
-    }
-    catch (Exception ex)
-    {
-        exception = ex.ToString();
-    }
-       */
-
-    
-       if(!e.File.ContentType.Contains("image") || CurrentUser == null)
-       {
-           SpanText = "Wrong file type";
-           return;
-       }
-       else if( CurrentUser == null)
-       {
-           SpanText = "Authorization error. Please log in or sign up a new account";
-           return;
-       }
-       else if(CurrentUser.MaxMediaWeight - CurrentUser.CurrentMediaWeight < e.File.Size)
-       {
-           SpanText = "Media storage size limitation reached";
-           return;
-       }
-       else
-       {
-            var mediaName = System.IO.Path.GetRandomFileName + Path.GetExtension(e.File.Name);
-            CurrentUser.Medias.Add(new Media(){
+        if(!e.File.ContentType.Contains("image") || CurrentUser == null)
+        {
+            SpanText = "Wrong file type";
+            return;
+        }else if( CurrentUser == null)
+        {
+            SpanText = "Authorization error. Please log in or sign up a new account";
+            return;
+        }else if(CurrentUser.MaxMediaWeight - CurrentUser.CurrentMediaWeight < (ulong)e.File.Size)
+        {
+            SpanText = "Media storage size limitation reached";
+            return;
+        }else
+        {
+            var mediaName = Path.GetRandomFileName().Replace(".",string.Empty) + Path.GetExtension(e.File.Name);
+            var media = new Media()
+            {
                 Name = mediaName,
                 Type = MediaType.Image,
-                Owner = CurrentUser
-           }
+                Owner = _context.Users.Where(x => x.Id == CurrentUser.Id).Single(),
+                Weight = e.File.Size
+            };
 
-            );
-            var imageUploadPath = @"~\MediaFiles\Images\" + mediaName;
-            var fs = new FileStream( imageUploadPath ,FileMode.Create);
+            _context.Users.Where(x => x.Id == CurrentUser.Id).Single().ProfilePicUrl = $"{media.Name}";
+            _context.Media.Add(media);
+            _context.SaveChanges();
+
+            var imageUploadPath = @"D:\pseudoroot\visualCodeProjects\prog\MediaFiles\Images\" + mediaName;
+            using var fs = new FileStream( imageUploadPath ,FileMode.Create);
             await e.File.OpenReadStream().CopyToAsync(fs);
-       }
+        }
         
     }
 }

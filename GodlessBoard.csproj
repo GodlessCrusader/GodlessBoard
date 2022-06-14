@@ -22,6 +22,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="MediaFiles\Images\6f906182a9e077688acf3225a465ab08.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="BlazorInputFile" Version="0.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.12" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.5" />

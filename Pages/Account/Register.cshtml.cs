@@ -39,7 +39,8 @@ namespace GodlessBoard.Pages.Account
                     DisplayName = Input.DisplayName,
                     PasswordHash = hg.PasswordHash,
                     PasswordSalt = hg.PasswordSalt,
-                    ProfilePicUrl = "defaultUserPic.png"
+                    ProfilePicUrl = "defaultUserPic.png",
+                    MaxMediaWeight = 9999999
                 });
                 _context.SaveChanges();
                 await Auth.Identify(HttpContext, Input.UserName, Input.DisplayName);
