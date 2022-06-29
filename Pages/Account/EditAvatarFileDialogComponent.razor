@@ -44,14 +44,21 @@
             return;
         }else
         {
+            byte[] bytes;
+            using(var ms = new MemoryStream())
+            {
+                var istream = e.File.OpenReadStream();
+                await istream.CopyToAsync(ms);
+                bytes = ms.ToArray();
+                istream.Close();
+                istream.Dispose();
+            }
 
 
-            byte[] bytes = new byte[1024];
-            var ms = new MemoryStream();
-            e.File.OpenReadStream().CopyTo(ms);
-            ms.Write(bytes, 0, bytes.Length);
-            var uploadResult = MediaUploadRouter.UploadMedia(bytes, CurrentUser.UserName, e.File.Name, _env.WebRootPath).Result;
-           
+            var task = MediaUploadRouter.UploadMedia(bytes, CurrentUser.UserName, e.File.Name, _env.WebRootPath);
+
+            var uploadResult = task.Result;
+          
             if(!string.IsNullOrEmpty(uploadResult))
             {
                 var media = new Media()
@@ -65,11 +72,11 @@
                 _context.Users.Where(x => x.Id == CurrentUser.Id).Single().ProfilePicUrl = $"{media.Name}";
                 _context.Media.Add(media);
                 _context.SaveChanges();
-
+                
             }
             else
             {
-                
+                SpanText = "This image already exists";
             }
 
             

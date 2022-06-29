@@ -16,16 +16,18 @@ namespace GodlessBoard.Services
             mediaName = uploadPath.Split('\\').Last();
             if (!Directory.Exists(uploadPath.Replace(mediaName, string.Empty)))
                 Directory.CreateDirectory(uploadPath.Replace(mediaName, string.Empty));
-
-            using (var fs = new FileStream(uploadPath, FileMode.Create)) 
-                await fs.WriteAsync(e, 0, e.Length);
-            
-            if (File.Exists(uploadPath))
+            if (!File.Exists(uploadPath))
             {
-                return string.Empty;
+                using (var fs = new FileStream(uploadPath, FileMode.Create))
+                {
+                    await fs.WriteAsync(e, 0, e.Length);
+                }
+                return mediaName;
             }
             else
-                return mediaName;
+                return string.Empty;
+
+            
             
 
             
@@ -38,7 +40,7 @@ namespace GodlessBoard.Services
             else
             {
                 string uploadPath;
-                using (var hmac = new HMACSHA256())
+                using (var hmac = new HMACSHA256(System.Text.UTF8Encoding.UTF8.GetBytes("sas")))
                 {
                     var ownerNameHash = (hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(ownerName))).ToHex(false);
                     var mediaNameHash = (hmac.ComputeHash(mediaBytes)).ToHex(false);
