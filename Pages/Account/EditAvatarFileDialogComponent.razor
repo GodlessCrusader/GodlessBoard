@@ -7,6 +7,7 @@
 @inject IConfiguration Configuration
 @inject MyDbContext _context
 @inject IHttpContextAccessor HttpContextAcessor
+@inject IWebHostEnvironment _env
 @inject HttpClient client
 @page "/"
 <form>
@@ -43,22 +44,35 @@
             return;
         }else
         {
-            var mediaName = Path.GetRandomFileName().Replace(".",string.Empty) + Path.GetExtension(e.File.Name);
-            var media = new Media()
+
+
+            byte[] bytes = new byte[1024];
+            var ms = new MemoryStream();
+            e.File.OpenReadStream().CopyTo(ms);
+            ms.Write(bytes, 0, bytes.Length);
+            var uploadResult = MediaUploadRouter.UploadMedia(bytes, CurrentUser.UserName, e.File.Name, _env.WebRootPath).Result;
+           
+            if(!string.IsNullOrEmpty(uploadResult))
             {
-                Name = mediaName,
-                Type = MediaType.Image,
-                Owner = _context.Users.Where(x => x.Id == CurrentUser.Id).Single(),
-                Weight = e.File.Size
-            };
+                var media = new Media()
+                {
+                    Name = uploadResult,
+                    Type = MediaType.Image,
+                    Owner = _context.Users.Where(x => x.Id == CurrentUser.Id).Single(),
+                    Weight = e.File.Size
+                };
 
-            _context.Users.Where(x => x.Id == CurrentUser.Id).Single().ProfilePicUrl = $"{media.Name}";
-            _context.Media.Add(media);
-            _context.SaveChanges();
+                _context.Users.Where(x => x.Id == CurrentUser.Id).Single().ProfilePicUrl = $"{media.Name}";
+                _context.Media.Add(media);
+                _context.SaveChanges();
 
-            var imageUploadPath = @"D:\pseudoroot\visualCodeProjects\prog\MediaFiles\Images\" + mediaName;
-            using var fs = new FileStream( imageUploadPath ,FileMode.Create);
-            await e.File.OpenReadStream().CopyToAsync(fs);
+            }
+            else
+            {
+                
+            }
+
+            
         }
         
     }
