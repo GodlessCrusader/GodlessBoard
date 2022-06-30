@@ -11,6 +11,7 @@ namespace GodlessBoard.Services
         {
             string mediaName = string.Empty;
             string uploadPath;
+            var relativePath =  (GeneratePath(e, ownerName) + Path.GetExtension(oldFileName)).Split('\\')[0] + "/" + (GeneratePath(e, ownerName) + Path.GetExtension(oldFileName)).Split('\\')[1];
             uploadPath = Path.Combine(webRootPath,"upload","userMedia", $"{GeneratePath(e, ownerName)}{Path.GetExtension(oldFileName)}");
             
             mediaName = uploadPath.Split('\\').Last();
@@ -20,9 +21,9 @@ namespace GodlessBoard.Services
             {
                 using (var fs = new FileStream(uploadPath, FileMode.Create))
                 {
-                    await fs.WriteAsync(e, 0, e.Length);
+                    fs.Write(e, 0, e.Length);
                 }
-                return mediaName;
+                return "../upload/userMedia/" + relativePath;
             }
             else
                 return string.Empty;
@@ -40,9 +41,9 @@ namespace GodlessBoard.Services
             else
             {
                 string uploadPath;
-                using (var hmac = new HMACSHA256(System.Text.UTF8Encoding.UTF8.GetBytes("sas")))
+                using (var hmac = new HMACSHA256(Encoding.UTF8.GetBytes("sas")))
                 {
-                    var ownerNameHash = (hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(ownerName))).ToHex(false);
+                    var ownerNameHash = (hmac.ComputeHash(Encoding.UTF8.GetBytes(ownerName))).ToHex(false);
                     var mediaNameHash = (hmac.ComputeHash(mediaBytes)).ToHex(false);
                     uploadPath = Path.Combine(ownerNameHash, mediaNameHash); 
                 }

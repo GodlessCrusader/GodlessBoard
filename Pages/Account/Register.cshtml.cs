@@ -39,7 +39,7 @@ namespace GodlessBoard.Pages.Account
                     DisplayName = Input.DisplayName,
                     PasswordHash = hg.PasswordHash,
                     PasswordSalt = hg.PasswordSalt,
-                    ProfilePicUrl = "defaultUserPic.png",
+                    ProfilePicUrl = "../image/defaultUserPic.png",
                     MaxMediaWeight = 9999999
                 });
                 _context.SaveChanges();

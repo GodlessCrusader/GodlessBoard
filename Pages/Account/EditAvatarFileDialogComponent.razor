@@ -12,6 +12,7 @@
 @page "/"
 <form>
     <label>Profile picture</label>
+    <img src="@(imgUrl)" height="100" width="100">
     <InputFile OnChange="UploadImage" />
     <button @onclick="ChangeButtonText">Change profile picture</button>
     <span class="text-dngr">@SpanText</span>
@@ -21,6 +22,8 @@
 @code {
     [Parameter]
     public User? CurrentUser { get; set; }
+    [Parameter]
+    public string imgUrl { get; set; }
     public string SpanText { get; set; } = string.Empty;
     string exception = string.Empty;
     public string buttonText { get; set; } = "buttonText";
@@ -55,10 +58,10 @@
             }
 
 
-            var task = MediaUploadRouter.UploadMedia(bytes, CurrentUser.UserName, e.File.Name, _env.WebRootPath);
+            var uploadResult = MediaUploadRouter.UploadMedia(bytes, CurrentUser.UserName, e.File.Name, _env.WebRootPath).Result;
 
-            var uploadResult = task.Result;
-          
+            imgUrl = uploadResult;
+
             if(!string.IsNullOrEmpty(uploadResult))
             {
                 var media = new Media()

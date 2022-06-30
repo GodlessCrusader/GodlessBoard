@@ -5,16 +5,19 @@
     
     if(!User.Identity.IsAuthenticated)
     {
-        <a asp-page="/Account/Login">Login</a>
-        <a asp-page="/Account/Register">Register</a>
+    <a asp-page="/Account/Login">Login</a>
+    <a asp-page="/Account/Register">Register</a>
     }
     else
     {
         Auth.ParseIdentityName(User.Identity.Name, out userName, out displayName);
-        <label>Hello, @displayName</label>
-        <form method="post" asp-page="/Account/Logout">
-            <button type="submit">Logout</button>    
-        </form>        
+    <label>Hello, @displayName</label>
+    <div style="width:30%;" class="bg-info rounded-circle">
+            
+    </div>
+    <form method="post" asp-page="/Account/Logout">
+                <button type="submit">Logout</button>    
+    </form>        
     }
 }
 

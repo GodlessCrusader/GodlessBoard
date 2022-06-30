@@ -11,7 +11,7 @@ namespace GodlessBoard.Services
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, $"{userName.ToUpper()}|{displayName}"),
+                new Claim(ClaimTypes.Name, $"{userName.ToUpper()}|{displayName}")
             };
             var identity = new ClaimsIdentity(claims, "GodlessCookie");
             ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(identity);
