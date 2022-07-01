@@ -22,10 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="wwwroot\upload\MediaFiles\Images\6f906182a9e077688acf3225a465ab08.jpg" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="BlazorInputFile" Version="0.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.12" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.5" />
@@ -47,8 +43,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\upload\MediaFiles\Images\10xmbyhm5qe.jpg" />
-    <None Include="wwwroot\upload\MediaFiles\Images\asbvk0shns3.jpg" />
+    <Folder Include="wwwroot\upload\userMedia\" />
   </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>
