@@ -9,21 +9,25 @@ namespace GodlessBoard.Services
     {
         public static async Task<string> UploadMedia(byte[] e, string ownerName, string oldFileName, string webRootPath)
         {
-            string mediaName = string.Empty;
+            
             string uploadPath;
-            var relativePath =  (GeneratePath(e, ownerName) + Path.GetExtension(oldFileName)).Split('\\')[0] + "/" + (GeneratePath(e, ownerName) + Path.GetExtension(oldFileName)).Split('\\')[1];
+            StringBuilder relativePath = new StringBuilder();
+            var userDirectories = ($"{GeneratePath(e, ownerName)}{Path.GetExtension(oldFileName)}").Split('\\');
+            relativePath.Append("../upload/userMedia/");
+            relativePath.Append(userDirectories[0]);
+            relativePath.Append('/');
+            relativePath.Append(userDirectories[1]);
             uploadPath = Path.Combine(webRootPath,"upload","userMedia", $"{GeneratePath(e, ownerName)}{Path.GetExtension(oldFileName)}");
             
-            mediaName = uploadPath.Split('\\').Last();
-            if (!Directory.Exists(uploadPath.Replace(mediaName, string.Empty)))
-                Directory.CreateDirectory(uploadPath.Replace(mediaName, string.Empty));
+            if (!Directory.Exists(uploadPath.Replace(userDirectories[1], string.Empty)))
+                Directory.CreateDirectory(uploadPath.Replace(userDirectories[1], string.Empty));
             if (!File.Exists(uploadPath))
             {
                 using (var fs = new FileStream(uploadPath, FileMode.Create))
                 {
                     fs.Write(e, 0, e.Length);
                 }
-                return "../upload/userMedia/" + relativePath;
+                return relativePath.ToString();
             }
             else
                 return string.Empty;
