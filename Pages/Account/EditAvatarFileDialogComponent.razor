@@ -58,15 +58,16 @@
             }
 
 
-            var uploadResult = MediaUploadRouter.UploadMedia(bytes, CurrentUser.UserName, e.File.Name, _env.WebRootPath).Result;
+            imgUrl = MediaUploadRouter.UploadMedia(bytes, CurrentUser.UserName, e.File.Name, _env.WebRootPath).Result;
 
-            imgUrl = uploadResult;
+            
 
-            if(!string.IsNullOrEmpty(uploadResult))
+            if(!string.IsNullOrEmpty(imgUrl))
             {
                 var media = new Media()
                 {
-                    Name = uploadResult,
+                    UserDisplayName = e.File.Name ,
+                    Name = imgUrl,
                     Type = MediaType.Image,
                     Owner = _context.Users.Where(x => x.Id == CurrentUser.Id).Single(),
                     Weight = e.File.Size

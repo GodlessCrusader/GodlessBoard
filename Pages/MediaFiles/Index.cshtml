@@ -2,9 +2,25 @@
 <h3>Media files managment</h3>
 <div>
     <h5>Images</h5>
+    @{
+        foreach(var image in Model.Images)
+        {
+            <div>
+                <h6>@image.UserDisplayName</h6>
+                <img src="@image.Name" height="200" width="200">
+                <hr>
+            </div>
+        }
+    }
 </div>
 <div>
-    <h5>Audio</h5>
+    <h5>Audios</h5>
+    @{
+        foreach(var audio in Model.Audios)
+        {
+            
+        }
+    }
 </div>
 @model GodlessBoard.Pages.MediaFiles.IndexModel
 @{
