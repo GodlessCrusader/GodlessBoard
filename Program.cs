@@ -36,7 +36,9 @@ app.UseAuthorization();
 app.UseAuthentication();
 app.MapRazorPages();
 app.MapBlazorHub();
+
 app.UseBlazorFrameworkFiles();
+
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllerRoute(

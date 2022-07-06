@@ -60,7 +60,7 @@
 
             imgUrl = MediaUploadRouter.UploadMedia(bytes, CurrentUser.UserName, e.File.Name, _env.WebRootPath).Result;
 
-            
+
 
             if(!string.IsNullOrEmpty(imgUrl))
             {
@@ -74,6 +74,7 @@
                 };
 
                 _context.Users.Where(x => x.Id == CurrentUser.Id).Single().ProfilePicUrl = $"{media.Name}";
+                _context.Users.Where(x => x.Id == CurrentUser.Id).Single().CurrentMediaWeight += (ulong)e.File.Size;
                 _context.Media.Add(media);
                 _context.SaveChanges();
                 
