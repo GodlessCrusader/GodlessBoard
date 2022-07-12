@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using GodlessBoard.Models;
+using GodlessBoard.Services;
 
 namespace GodlessBoard.Pages.Games
 {
@@ -30,11 +31,16 @@ namespace GodlessBoard.Pages.Games
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
-          if (!ModelState.IsValid || _context.Games == null || Game == null)
+            var owner = _context.Users.Where(u => u.UserName == Auth.GetUserName( User.Identity.Name)).Single();
+            Game.Players.Add(owner);
+          if (!ModelState.IsValid || Game == null)
             {
                 return Page();
             }
-
+          //if(_context.Games == null)
+          //{
+          //      _context.Games = new List<Game>();
+          //}
             _context.Games.Add(Game);
             await _context.SaveChangesAsync();
 
