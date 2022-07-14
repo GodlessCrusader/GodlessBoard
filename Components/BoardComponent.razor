@@ -1,0 +1,36 @@
+﻿@using Blazor.Extensions
+@using Blazor.Extensions.Canvas.Canvas2D
+@using Blazor.Extensions.Canvas
+@using BlazorGameInstance.Model
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@page "/"
+
+<BECanvas @ref="_canvas" Height="300" Width="400"></BECanvas>
+<label>Counter :@c</label>
+<button class="btn btn-primary" @onclick = "OnClick">onclick</button>
+<button class="btn btn-secondary" @onclick = "CanvasRender">Canvas render</button>
+@code {
+    public int c { get; set; } = 0;
+    private BECanvasComponent _canvas;
+    private Canvas2DContext _canvasContext;
+    private Board _board { get; set; }
+    protected override void OnInitialized()
+    {
+
+    }
+    public void OnClick()
+    {
+        c++;
+
+    }
+    public async void CanvasRender()
+    {
+        _canvasContext = await _canvas.CreateCanvas2DAsync();
+        await _canvasContext.SetFillStyleAsync("gray");
+        await _canvasContext.FillRectAsync(10, 100, 100, 100);
+        await _canvasContext.StrokeTextAsync("sosi jepu", 10, 100);
+    }
+}
+

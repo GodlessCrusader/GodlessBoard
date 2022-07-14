@@ -1,10 +1,16 @@
-﻿@page
+﻿@page 
+@using GodlessBoard.Components
 
 @model IndexModel
+<head>123s</head>
+<base href="/"/>
+
+
 @{
     ViewData["Title"] = "Home page";
+    
+    <component type="typeof(BoardComponent)" render-mode="ServerPrerendered"></component>
 }
-<head>index</head>
-<base href="/"/>
-<script src="/_framework/blazor.webassembly.js"></script>
+<script src="_content/Blazor.Extensions.Canvas/blazor.extensions.canvas.js"></script>
+<script src="_framework/blazor.webassembly.js"></script>
 <script src="/_framework/aspnetcore-browser-refresh.js"></script>
