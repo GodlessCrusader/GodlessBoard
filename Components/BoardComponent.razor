@@ -17,7 +17,8 @@
     public int c { get; set; } = 0;
     private BECanvasComponent _canvas;
     private Canvas2DContext _canvasContext;
-    private Board _board { get; set; }
+    [Parameter]
+    public Board Board { get; set; }
     protected override void OnInitialized()
     {
 
@@ -29,20 +30,20 @@
     }
     public async void CanvasRender()
     {
-        _board = new Board("Main");
-        height = _board.Height;
-        width = _board.Width;
+        Board = new Board("Main");
+        height = Board.Height;
+        width = Board.Width;
         _canvasContext = await _canvas.CreateCanvas2DAsync();
         await _canvasContext.SetFillStyleAsync("gray");
-        for(int i=0;i<_canvas.Height;i+=_board.Grid.Size)
+        for(int i=0;i<=_canvas.Height;i+=Board.Grid.Size)
         {
-            await _canvasContext.FillRectAsync(i, 0, _board.Grid.LineWidth, _board.Height);    
+            await _canvasContext.FillRectAsync(i, 0, Board.Grid.LineWidth, Board.Height);    
         }
-        for(int i=0;i<_board.Width;i+=_board.Grid.Size)
+        for(int i=0;i<=Board.Width;i+=Board.Grid.Size)
         {
-            await _canvasContext.FillRectAsync(0, i, _board.Height, _board.Grid.LineWidth);    
+            await _canvasContext.FillRectAsync(0, i, Board.Height, Board.Grid.LineWidth);    
         }
-        
+        //await _canvasContext.FillRectAsync(0,0,20,20);
         //await _canvasContext.StrokeTextAsync("sosi jepu", 10, 100);
     }
 }

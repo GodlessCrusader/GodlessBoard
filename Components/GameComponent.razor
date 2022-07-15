@@ -1,0 +1,33 @@
+﻿
+@using BlazorGameInstance.Model
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+<BoardComponent Board="@_currentBoard"></BoardComponent>
+<ChatComponent></ChatComponent>
+
+@{
+    if(_isOpen)
+    {
+        foreach(var b in Game.Tabs)
+        {
+            <button class="btn btn-toolbar">@b.Name</button>
+        }
+        <button class="btn btn-toolbar">Create new board</button>
+    }
+    else
+    {
+        <button @onclick="OpenDialog" class="btn btn-secondary">open tabs menu</button>
+    }
+}
+
+@code {
+    private Board _currentBoard;
+    [Parameter]
+    public Game Game { get; set; } 
+    private bool _isOpen { get; set; }
+    private void OpenDialog()
+    {
+        _isOpen = !_isOpen;
+    }
+}

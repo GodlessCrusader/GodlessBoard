@@ -9,7 +9,7 @@
 @{
     ViewData["Title"] = "Home page";
     
-    <component type="typeof(BoardComponent)" render-mode="ServerPrerendered"></component>
+    <component type="typeof(GameComponent)" param-Game="@Model.TestGenericGame" render-mode="ServerPrerendered"></component>
 }
 <script src="_content/Blazor.Extensions.Canvas/blazor.extensions.canvas.js"></script>
 <script src="_framework/blazor.webassembly.js"></script>
