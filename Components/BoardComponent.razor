@@ -1,16 +1,21 @@
 ﻿@using Blazor.Extensions
 @using Blazor.Extensions.Canvas.Canvas2D
 @using Blazor.Extensions.Canvas
-@using BlazorGameInstance.Model
+@using GodlessBoard.GameModel
 @using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Web
 
-
+<div id="BoardPreferencesToolbarContainer" >
+    <EditForm Model="Board.Grid">
+    <InputText>Grid resolution: </InputText>
+    <InputText>Grid line width: </InputText>
+    </EditForm>
+</div>
 <BECanvas @ref="_canvas" Height="@height" Width="@width"></BECanvas>
 <label>Counter :@c</label>
 <button class="btn btn-primary" @onclick = "OnClick">onclick</button>
-<button class="btn btn-secondary" @onclick = "CanvasRender">Canvas render</button>
+<button class="btn btn-secondary" @onclick = "CanvasRenderAsync">Canvas render</button>
 @code {
     public int height { get; set; }
     public int width { get; set; }
@@ -28,13 +33,19 @@
         c++;
 
     }
-    public async void CanvasRender()
+    public async void CanvasRenderAsync()
     {
         Board = new Board("Main");
         height = Board.Height;
         width = Board.Width;
         _canvasContext = await _canvas.CreateCanvas2DAsync();
-        await _canvasContext.SetFillStyleAsync("gray");
+        await GridRenderAsync();
+        //await _canvasContext.FillRectAsync(0,0,20,20);
+        //await _canvasContext.StrokeTextAsync("sosi jepu", 10, 100);
+    }
+    public async Task GridRenderAsync()
+    {
+         await _canvasContext.SetFillStyleAsync("gray");
         for(int i=0;i<=_canvas.Height;i+=Board.Grid.Size)
         {
             await _canvasContext.FillRectAsync(i, 0, Board.Grid.LineWidth, Board.Height);    
@@ -43,8 +54,6 @@
         {
             await _canvasContext.FillRectAsync(0, i, Board.Height, Board.Grid.LineWidth);    
         }
-        //await _canvasContext.FillRectAsync(0,0,20,20);
-        //await _canvasContext.StrokeTextAsync("sosi jepu", 10, 100);
     }
 }
 

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using GodlessBoard.Models;
 using GodlessBoard.Services;
 using System.ComponentModel.DataAnnotations;
+using GodlessBoard.GameModel;
 
 namespace GodlessBoard.Pages.Games
 {
@@ -33,7 +34,7 @@ namespace GodlessBoard.Pages.Games
         public async Task<IActionResult> OnPostAsync()
         {
             var owner = _context.Users.Where(u => u.UserName == Auth.GetUserName( User.Identity.Name)).Single();
-            var game = new Game();
+            var game = new GodlessBoard.Models.Game();
             game.Players = new List<User>();
             game.Players.Add(owner);
             
@@ -48,8 +49,8 @@ namespace GodlessBoard.Pages.Games
             game.Name = Game.Name;
             game.Bio = Game.Bio;
             game.JsonRepresentation = Newtonsoft.Json.JsonConvert.SerializeObject(
-                new BlazorGameInstance.Model.Game(game.Name,
-                    new BlazorGameInstance.Model.Player(owner.DisplayName, BlazorGameInstance.Model.Role.Owner)));
+                new GodlessBoard.GameModel.Game(game.Name,
+                    new GodlessBoard.GameModel.Player(owner.DisplayName, Role.Owner)));
             
             _context.Games.Add(game);
             _context.UserGameRole.Add(new UserGameRole()

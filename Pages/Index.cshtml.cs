@@ -1,6 +1,5 @@
-﻿using BlazorGameInstance.Model;
-using GodlessBoard.Data;
-using Microsoft.AspNetCore.Mvc;
+﻿using GodlessBoard.Data;
+using GodlessBoard.GameModel;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace GodlessBoard.Pages
