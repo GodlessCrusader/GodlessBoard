@@ -19,7 +19,6 @@ namespace GodlessBoard.GameModel
         public List<Player> Players { get; set; }
         public List<Board> Tabs { get; set; }
         public List<object>? Medias { get; set; }
-        public List<ChatMessage> Chat { get; set; }
         public void Start()
         {
 

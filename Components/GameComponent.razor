@@ -1,5 +1,6 @@
 ﻿
 @using GodlessBoard.GameModel
+@using GodlessBoard.Models
 @using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Web
@@ -22,9 +23,12 @@
 }
 
 @code {
-    private Board _currentBoard;
+    
     [Parameter]
-    public Game Game { get; set; } 
+    public GameModel.Game Game { get; set; } 
+    [Parameter]
+    public Chat Chat { get; set; }
+    private Board _currentBoard;
     private bool _isOpen { get; set; }
     private void OpenDialog()
     {

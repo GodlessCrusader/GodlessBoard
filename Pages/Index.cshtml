@@ -16,7 +16,7 @@
     {
         if(User.Identity.IsAuthenticated)
         {
-            <component type="typeof(GameComponent)" param-Game="@Model.TestGenericGame" render-mode="ServerPrerendered"></component>
+            <component type="typeof(GameComponent)" param-Game="@Model.TestGenericGame" param-Chat="@Model.TestGenericChat" render-mode="ServerPrerendered"></component>
         }
         else
         {
