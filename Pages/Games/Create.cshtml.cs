@@ -53,6 +53,7 @@ namespace GodlessBoard.Pages.Games
                     new GodlessBoard.GameModel.Player(owner.DisplayName, Role.Owner)));
             
             _context.Games.Add(game);
+            
             _context.UserGameRole.Add(new UserGameRole()
             {
                 User = owner,

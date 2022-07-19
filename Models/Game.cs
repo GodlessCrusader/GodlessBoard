@@ -7,8 +7,7 @@
         public string Name { get; set; }
         public string? PicUrl { get; set; }
         public string? Bio { get; set; }
-        public Chat Chat { get; set; }
-        public int ChatId { get; set; }
+        public List<ChatMessage> Chat { get; set; }
         public ICollection<User> Players { get; set; }
         public ICollection<Media>? Medias { get; set; }
     }

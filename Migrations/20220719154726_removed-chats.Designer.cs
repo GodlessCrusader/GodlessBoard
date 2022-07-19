@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GodlessBoard.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20220718193605_added-user-prop-to-chatmessag")]
-    partial class addeduserproptochatmessag
+    [Migration("20220719154726_removed-chats")]
+    partial class removedchats
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -39,19 +39,6 @@ namespace GodlessBoard.Migrations
                     b.ToTable("GameUser");
                 });
 
-            modelBuilder.Entity("GodlessBoard.Models.Chat", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Chats");
-                });
-
             modelBuilder.Entity("GodlessBoard.Models.ChatMessage", b =>
                 {
                     b.Property<int>("Id")
@@ -60,7 +47,7 @@ namespace GodlessBoard.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("ChatId")
+                    b.Property<int>("GameId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("RecievingTime")
@@ -75,7 +62,7 @@ namespace GodlessBoard.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ChatId");
+                    b.HasIndex("GameId");
 
                     b.HasIndex("UserId");
 
@@ -93,9 +80,6 @@ namespace GodlessBoard.Migrations
                     b.Property<string>("Bio")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ChatId")
-                        .HasColumnType("int");
-
                     b.Property<string>("JsonRepresentation")
                         .HasColumnType("nvarchar(max)");
 
@@ -107,8 +91,6 @@ namespace GodlessBoard.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ChatId");
 
                     b.ToTable("Games");
                 });
@@ -237,9 +219,9 @@ namespace GodlessBoard.Migrations
 
             modelBuilder.Entity("GodlessBoard.Models.ChatMessage", b =>
                 {
-                    b.HasOne("GodlessBoard.Models.Chat", "Chat")
-                        .WithMany("Messages")
-                        .HasForeignKey("ChatId")
+                    b.HasOne("GodlessBoard.Models.Game", "Game")
+                        .WithMany("Chat")
+                        .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -249,20 +231,9 @@ namespace GodlessBoard.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Chat");
+                    b.Navigation("Game");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("GodlessBoard.Models.Game", b =>
-                {
-                    b.HasOne("GodlessBoard.Models.Chat", "Chat")
-                        .WithMany()
-                        .HasForeignKey("ChatId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Chat");
                 });
 
             modelBuilder.Entity("GodlessBoard.Models.Media", b =>
@@ -299,13 +270,10 @@ namespace GodlessBoard.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("GodlessBoard.Models.Chat", b =>
-                {
-                    b.Navigation("Messages");
-                });
-
             modelBuilder.Entity("GodlessBoard.Models.Game", b =>
                 {
+                    b.Navigation("Chat");
+
                     b.Navigation("Medias");
                 });
 

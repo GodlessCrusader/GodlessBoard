@@ -4,27 +4,25 @@
 @model IndexModel
 <head></head>
 <base href="/"/>
-
-
 @{
-    ViewData["Title"] = "Home page";
     if(Model.TestGenericGame == null)
     {
-        <label>Game load error</label>    
+    <label>Game load error</label>    
     }
     else 
     {
         if(User.Identity.IsAuthenticated)
         {
-            <component type="typeof(GameComponent)" param-Game="@Model.TestGenericGame" param-Chat="@Model.TestGenericChat" render-mode="ServerPrerendered"></component>
+          //  <component type="typeof(ChatComponent)" param-Chat="@Model.TestGenericChat" render-mode="ServerPrerendered"/>
         }
         else
         {
-            <label>Please consider authorization</label>
+    <label>Please consider authorization</label>
         }
     }
-    <iframe frameborder="0" style="border:none;width:100%;height:180px;" width="100%" height="180" src="https://music.yandex.ru/iframe/#track/53655545/7683544">Слушайте <a href='https://music.yandex.ru/album/7683544/track/53655545'>Soultalker</a> — <a href='https://music.yandex.ru/artist/6486220'>Menual</a> на Яндекс Музыке</iframe>
+ 
 }
+
 <script src="_content/Blazor.Extensions.Canvas/blazor.extensions.canvas.js"></script>
 <script src="_framework/blazor.webassembly.js"></script>
 <script src="/_framework/aspnetcore-browser-refresh.js"></script>

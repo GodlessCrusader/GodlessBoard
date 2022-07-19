@@ -12,7 +12,6 @@ namespace GodlessBoard.Data
         public DbSet<Game> Games { get; set; }
         public DbSet<UserGameRole> UserGameRole { get; set; }
         public DbSet<Media> Media { get; set; }
-        public DbSet<Chat> Chats { get; set; }
         public DbSet<ChatMessage> Messages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)

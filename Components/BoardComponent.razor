@@ -6,12 +6,13 @@
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Web
 
-<div id="BoardPreferencesToolbarContainer" >
-    <EditForm Model="Board.Grid">
-    <InputText>Grid resolution: </InputText>
-    <InputText>Grid line width: </InputText>
-    </EditForm>
-</div>
+@{//<div id="BoardPreferencesToolbarContainer" >
+    //<EditForm Model="Board.Grid">
+    //<InputNumber @bind-Value="Board.Grid.Size">Grid resolution: </InputNumber>
+    //<InputNumber @bind-Value="Board.Grid.LineWidth">Grid line width: </InputNumber>
+    //</EditForm>
+//</div>
+}
 <BECanvas @ref="_canvas" Height="@height" Width="@width"></BECanvas>
 <label>Counter :@c</label>
 <button class="btn btn-primary" @onclick = "OnClick">onclick</button>
@@ -22,12 +23,9 @@
     public int c { get; set; } = 0;
     private BECanvasComponent _canvas;
     private Canvas2DContext _canvasContext;
-    [Parameter]
     public Board Board { get; set; }
-    protected override void OnInitialized()
-    {
-
-    }
+    [Parameter]
+    public Models.Game Game { get; set; }
     public void OnClick()
     {
         c++;
@@ -35,7 +33,8 @@
     }
     public async void CanvasRenderAsync()
     {
-        Board = new Board("Main");
+        var game = Newtonsoft.Json.JsonConvert.DeserializeObject<GameModel.Game>(Game.JsonRepresentation);
+        Board = game.Tabs[0];
         height = Board.Height;
         width = Board.Width;
         _canvasContext = await _canvas.CreateCanvas2DAsync();

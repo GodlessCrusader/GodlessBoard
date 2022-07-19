@@ -1,0 +1,33 @@
+﻿@page
+@using GodlessBoard.Components
+@model GodlessBoard.Pages.Games.PlayModel
+
+<head></head>
+<base href="/"/>
+@{
+    ViewData["Title"] = "Home page";
+    if(Model.CurrentGame == null)
+    {
+    <label>Game load error</label>    
+    }
+    else 
+    {
+        if(User.Identity.IsAuthenticated)
+        {
+            <div height = "100%" align = "right" id="ChatContainer">
+            <component type="typeof(ChatComponent)"  param-Game="@Model.CurrentGame" render-mode="ServerPrerendered"/>
+            </div>
+            <div align = "left" id="BoardContainer">
+            <component type="typeof(BoardComponent)" param-Game="@Model.CurrentGame" render-mode="ServerPrerendered"/>
+            </div>
+        }
+        else
+        {
+    <label>Please consider authorization</label>
+        }
+    }
+ 
+}
+<script src="_content/Blazor.Extensions.Canvas/blazor.extensions.canvas.js"></script>
+<script src="_framework/blazor.webassembly.js"></script>
+<script src="/_framework/aspnetcore-browser-refresh.js"></script>
