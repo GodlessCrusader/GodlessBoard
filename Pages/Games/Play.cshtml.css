@@ -1,0 +1,34 @@
+﻿*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+body {
+    margin-bottom:0px;
+}
+#BoardContainer{
+    overflow: scroll;
+    
+
+}
+#Container{
+    display:grid;
+    grid-template-columns: 80% 20%;
+    grid-template-rows: 100%;
+    position: absolute;
+    top:0;
+    bottom:0;
+    right:0;
+    left:0;
+    
+}
+#ChatContainer{
+    background-color: lightslategray;
+    position: relative;
+    right:0;
+    bottom:0;
+    overflow-y:scroll;
+}
+#SendMessageForm{
+    
+}

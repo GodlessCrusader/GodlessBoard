@@ -12,7 +12,7 @@ namespace GodlessBoard.Pages.Games
         private readonly MyDbContext _dbContext;
 
         public Models.Game CurrentGame { get; private set; }
-
+        public List<ChatMessage> CurrentChat { get; set; }
         public PlayModel(MyDbContext myDbContext)
         {
             _dbContext = myDbContext;
@@ -20,14 +20,10 @@ namespace GodlessBoard.Pages.Games
         
         public async Task OnGetAsync(int GameId)
         {
+           
             CurrentGame = _dbContext.Games.Where(x => x.Id == GameId).Single();
-            if(CurrentGame.Chat == null)
-            {
-                var chat = new List<ChatMessage>();
-                chat = _dbContext.Messages.Where(x => x.Game.Id == CurrentGame.Id).ToList();
-                CurrentGame.Chat = chat;
-            }
-            
+            CurrentChat = _dbContext.Messages.Where(x => x.Game.Id == CurrentGame.Id).ToList();
+
             
         }
         

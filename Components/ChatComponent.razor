@@ -7,36 +7,59 @@
 @inject MyDbContext _dbContext
 
 @inject IHttpContextAccessor _httpContextAccessor
-
-<div id="MessageHistoryContainer">
+<div style="position: absolute; bottom:0;">
+<div id="MessageHistoryContainer" >
     @{  
-        foreach (var m in Game.Chat)
+        foreach (var m in Chat)
         {
-            <label style="font:bold">@m.User.DisplayName</label>
-            <br>
-            <img height="50" width="50" src="@m.User.ProfilePicUrl">
-            <label>@m.Text</label>
-            <label>@m.RecievingTime.ToString()</label>
-            <br>
+                    <label><b>@m.User.DisplayName</b></label>
+                    <br>
+                    <img height="25" width="25" src="@m.User.ProfilePicUrl">
+                    <label style="font-size:12px;">@m.Text</label>
+                    <br>
+                    <label style="font-size:10px">@m.RecievingTime.ToString()</label>
+                    <br>
         }
     }
 </div>
-<EditForm Model="SentMessageText">
+
+    <EditForm Model="SentMessageText" >
     <InputText @bind-Value="SentMessageText"/>
     <button @onclick = "SendMessageAsync" class="btn btn-outline-primary">Send</button>
-</EditForm>
+    </EditForm>
+</div>
+
 
 
 @code {
 
     [Parameter]
-    public Game Game { get; set; }
+    public int GameId { get; set; }
+    public List<ChatMessage> Chat { get; set; }
+    public List<User> ChatMembers { get; set; }
     public string SentMessageText { get; set; } = string.Empty;
     protected override void OnInitialized()
     {
-        if(Game.Chat == null)
+
+        Chat = (from messages in _dbContext.Messages
+                where messages.Game.Id == GameId
+                select messages).ToList();
+        var userIds = new List<int>();
+        foreach(var m in Chat)
         {
-            Game.Chat = new List<ChatMessage>() {
+            if(!userIds.Exists(x => x == m.UserId))
+            {
+                userIds.Add(m.UserId);
+            }
+        }
+        ChatMembers = (from users in _dbContext.Users
+                       where userIds.Contains(users.Id)
+                       select users).ToList();
+        // ChatMembers = _dbContext.Users.Where(x => ).ToList();
+        if(Chat == null)
+        {
+            Chat = new List
+    <ChatMessage>() {
                 new ChatMessage() { User = _dbContext.Users.Where(x => x.UserName == Auth.GetUserName(_httpContextAccessor.HttpContext.User.Identity.Name)).Single(),
                 Text = "The very first message"
                 } 
@@ -48,8 +71,8 @@
         if (!string.IsNullOrEmpty(SentMessageText))
         {
             var currentUser = _dbContext.Users.Where(x => x.UserName == Auth.GetUserName(_httpContextAccessor.HttpContext.User.Identity.Name)).Single();
-            var sentMessage = new ChatMessage() { Text = SentMessageText, Game=_dbContext.Games.SingleOrDefault(x => x.Id == Game.Id), User = currentUser, RecievingTime = DateTime.Now};
-            Game.Chat.Add(sentMessage);
+            var sentMessage = new ChatMessage() { Text = SentMessageText, Game=_dbContext.Games.SingleOrDefault(x => x.Id == GameId), User = currentUser, RecievingTime = DateTime.Now};
+            Chat.Add(sentMessage);
             await _dbContext.Messages.AddAsync(sentMessage);
             await _dbContext.SaveChangesAsync();
             SentMessageText = string.Empty;

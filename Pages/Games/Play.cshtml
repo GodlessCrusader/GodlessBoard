@@ -4,7 +4,11 @@
 
 <head></head>
 <base href="/"/>
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/GodlessBoard.styles.css" asp-append-version="true" />
 @{
+    Layout = null;
     ViewData["Title"] = "Home page";
     if(Model.CurrentGame == null)
     {
@@ -14,12 +18,15 @@
     {
         if(User.Identity.IsAuthenticated)
         {
-            <div height = "100%" align = "right" id="ChatContainer">
-            <component type="typeof(ChatComponent)"  param-Game="@Model.CurrentGame" render-mode="ServerPrerendered"/>
-            </div>
-            <div align = "left" id="BoardContainer">
-            <component type="typeof(BoardComponent)" param-Game="@Model.CurrentGame" render-mode="ServerPrerendered"/>
-            </div>
+    <div id="Container">
+        <div id="BoardContainer">
+             <component type="typeof(BoardComponent)" param-Game="@Model.CurrentGame" render-mode="ServerPrerendered"/>
+        </div>
+        <div id="ChatContainer">
+             <component type="typeof(ChatComponent)"  param-GameId="@Model.CurrentGame.Id"  render-mode="ServerPrerendered"/>
+        </div>
+                    
+    </div>
         }
         else
         {
@@ -29,5 +36,7 @@
  
 }
 <script src="_content/Blazor.Extensions.Canvas/blazor.extensions.canvas.js"></script>
-<script src="_framework/blazor.webassembly.js"></script>
-<script src="/_framework/aspnetcore-browser-refresh.js"></script>
+<script src="_framework/blazor.server.js"></script>    
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
