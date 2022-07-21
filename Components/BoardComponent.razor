@@ -13,11 +13,27 @@
     //</EditForm>
 //</div>
 }
-<BECanvas @ref="_canvas" Height="@height" Width="@width"></BECanvas>
+<div ><BECanvas @ref="_canvas" Height="@height" Width="@width" ></BECanvas></div>
+<input type="range" min="1" step="1" max="200"  @bind="ZoomGrade" />
+<label> Scale: @ZoomGrade %</label>
+<div id="zoomslider" class="ui-slider ui-slider-vertical ui-widget ui-widget-content ui-corner-all"><a class="ui-slider-handle ui-state-default ui-corner-all" href="#" style="bottom: 14.5833%;"></a></div>
 <label>Counter :@c</label>
 <button class="btn btn-primary" @onclick = "OnClick">onclick</button>
-<button class="btn btn-secondary" @onclick = "CanvasRenderAsync">Canvas render</button>
+<button class="btn btn-secondary"  @onclick = "CanvasRenderAsync">Canvas render</button>
 @code {
+    private float _zoomGrade = 1;
+    public float ZoomGrade 
+    {
+        get
+        {
+            return _zoomGrade;
+        }
+        set
+        {
+            _zoomGrade = value;
+            CanvasRenderAsync();
+        } 
+    }
     public int height { get; set; }
     public int width { get; set; }
     public int c { get; set; } = 0;
@@ -30,7 +46,19 @@
     {
         c++;
     }
-    public async void CanvasRenderAsync()
+    public async Task ZoomSliderChangeAsync()
+    {
+        await CanvasRenderAsync();
+    }
+    public async void ZoomInAsync()
+    {
+        ZoomGrade++;
+    }
+    public async void ZoomOutAsync()
+    {
+        ZoomGrade--;
+    }
+    public async Task CanvasRenderAsync()
     {
         var game = Newtonsoft.Json.JsonConvert.DeserializeObject<GameModel.Game>(Game.JsonRepresentation);
         Board = game.Tabs[0];
@@ -43,14 +71,21 @@
     }
     public async Task GridRenderAsync()
     {
-         await _canvasContext.SetFillStyleAsync("gray");
-        for(int i=0;i<=_canvas.Height;i+=Board.Grid.Size)
+        var blackspaceSize = (Board.Grid.Size+Board.Grid.LineWidth)*ZoomGrade/100;
+        await _canvasContext.SetFillStyleAsync("black");
+        await _canvasContext.FillRectAsync(0,0,Board.Width+100,Board.Height+100);
+        await _canvasContext.SetFillStyleAsync("white");
+        var c = _canvas.Height;
+        var b = Board.Height;
+        await _canvasContext.FillRectAsync(blackspaceSize,blackspaceSize,Board.Width-blackspaceSize*2, Board.Height-blackspaceSize*2);
+        await _canvasContext.SetFillStyleAsync("gray");
+        for(float i=blackspaceSize;i<=Board.Height-blackspaceSize*2;i+=blackspaceSize)
         {
-            await _canvasContext.FillRectAsync(i, 0, Board.Grid.LineWidth, Board.Height);    
+            await _canvasContext.FillRectAsync(i, blackspaceSize, Board.Grid.LineWidth, Board.Height-blackspaceSize*2);    
         }
-        for(int i=0;i<=Board.Width;i+=Board.Grid.Size)
+        for(float i=blackspaceSize;i<=Board.Height-blackspaceSize*2;i+=blackspaceSize)
         {
-            await _canvasContext.FillRectAsync(0, i, Board.Height, Board.Grid.LineWidth);    
+            await _canvasContext.FillRectAsync(blackspaceSize, i, Board.Height-blackspaceSize*2, Board.Grid.LineWidth);    
         }
     }
 }
