@@ -5,7 +5,7 @@
         public Grid()
         {
             Size = 50;
-            LineWidth = 2;
+            LineWidth = 1;
             Type = GridType.Square;
         }
         public int LineWidth { get; set; }
