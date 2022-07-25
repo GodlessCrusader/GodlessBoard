@@ -1,10 +1,14 @@
 ﻿@using Blazor.Extensions
 @using Blazor.Extensions.Canvas.Canvas2D
 @using Blazor.Extensions.Canvas
+@using GodlessBoard.Data
 @using GodlessBoard.GameModel
 @using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Web
+@using Microsoft.JSInterop
+@inject MyDbContext _dbContext
+@inject IJSRuntime _jsRuntime
 
 @{//<div id="BoardPreferencesToolbarContainer" >
     //<EditForm Model="Board.Grid">
@@ -75,6 +79,7 @@
         width = (100 + Board.Width)*ZoomGrade/100;
         _canvasContext = await _canvas.CreateCanvas2DAsync();
         await GridRenderAsync();
+        await TokensRenderAsync(game);
         //await _canvasContext.FillRectAsync(0,0,20,20);
         //await _canvasContext.StrokeTextAsync("sosi jepu", 10, 100);
     }
@@ -88,7 +93,7 @@
         var b = Board.Height;
         await _canvasContext.FillRectAsync(blackspaceSize,blackspaceSize,width-blackspaceSize*2, height-blackspaceSize*2);
         await _canvasContext.SetFillStyleAsync("gray");
-        
+
         for(float i=blackspaceSize;i<=height-blackspaceSize*2;i+=blackspaceSize)
         {
             await _canvasContext.FillRectAsync(i, blackspaceSize, lineWidth, height-blackspaceSize*2);    
@@ -97,6 +102,19 @@
         {
             await _canvasContext.FillRectAsync(blackspaceSize, i, height-blackspaceSize*2, lineWidth);    
         }
+    }
+    public async Task TokensRenderAsync(Game game)
+    {
+        foreach(var t in game.Tokens)
+        {
+            var context = new WebElementReferenceContext(_jsRuntime);
+            var image = new ElementReference();
+            
+        }
+    }
+    public async Task UpdateGameAsync()
+    {
+        
     }
 }
 
