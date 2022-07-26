@@ -5,13 +5,23 @@
 @using Microsoft.AspNetCore.Components.Web
 @using Microsoft.AspNetCore.Components.Forms
 @inject MyDbContext _dbContext
-
 @inject IHttpContextAccessor _httpContextAccessor
-<div style="position: absolute; bottom:0;">
-<div id="MessageHistoryContainer" >
-    @{  
-        foreach (var m in Chat)
-        {
+
+
+<div class="tab" style="z-index:5;">
+    <div id="tablinksContainer">
+        <button class="tablinks" @onclick="() => ShowElement(ref _chatDisplay)">Chat</button>
+        <button class="tablinks" @onclick="() => ShowElement(ref _sheetsDisplay)">Sheets</button>
+        <button class="tablinks" @onclick="() => ShowElement(ref _audioDisplay)">Audio</button>
+        <button class="tablinks" @onclick="() => ShowElement(ref _imagesDisplay)">Images</button>
+        <button class="tablinks" @onclick="() => ShowElement(ref _settingsDisplay)">Settings</button>
+    </div>
+    
+    <div id="ChatContainer" class="tab-content" style=" bottom:0; display:@_chatDisplay">
+        <div id="MessageHistoryContainer" style="z-index:1;">
+            @{  
+                foreach (var m in Chat)
+                {
                     <label><b>@m.User.DisplayName</b></label>
                     <br>
                     <img height="25" width="25" src="@m.User.ProfilePicUrl">
@@ -19,28 +29,70 @@
                     <br>
                     <label style="font-size:10px">@m.RecievingTime.ToString()</label>
                     <br>
+                }
+            }
+        </div>
+        <EditForm Model="SentMessageText" >
+        <InputText @bind-Value="SentMessageText"/>
+        <button @onclick = "SendMessageAsync" class="btn btn-outline-primary">Send</button>
+        </EditForm>
+    </div>
+    <div class="tabcontent" id="sheetsContainer" style="display:@_sheetsDisplay">sheetscontainer</div>
+    <div class="tabcontent" id="audioContainer" style="display:@_audioDisplay">audiocontainer</div>
+    <div class="tabcontent" id="imagesContainer" style="display:@_imagesDisplay">
+        <ul>
+        @{            
+            foreach(var m in User.Medias)
+            {
+                if (m.Type == MediaType.Image)
+                {
+                    <li><img style="height:20px; width:20px;" src="@m.Name"/></li>
+                }
+            }          
         }
-    }
+        </ul>
+    </div>
+    <div class="tabcontent" id="settingsContainer" style="display:@_settingsDisplay">settingscontainer</div>
 </div>
 
-    <EditForm Model="SentMessageText" >
-    <InputText @bind-Value="SentMessageText"/>
-    <button @onclick = "SendMessageAsync" class="btn btn-outline-primary">Send</button>
-    </EditForm>
-</div>
+
+
+    
+
 
 
 
 @code {
-
+    [Parameter]
+    public int UserId { get; set; }
     [Parameter]
     public int GameId { get; set; }
     public List<ChatMessage> Chat { get; set; }
     public List<User> ChatMembers { get; set; }
     public string SentMessageText { get; set; } = string.Empty;
+    public User User { get; set; }
+    private string _chatDisplay = "block";
+    private string _sheetsDisplay = "none";
+    private string _audioDisplay =  "none";
+    private string _imagesDisplay =  "none";
+    private string _settingsDisplay =  "none";
+    
+    public void ShowElement(ref string num)
+    {
+        _chatDisplay = "none";
+        _sheetsDisplay = "none";
+        _audioDisplay = "none";
+        _imagesDisplay = "none";
+        _settingsDisplay = "none";
+        
+        num = "block";
+    }
+
+   
     protected override void OnInitialized()
     {
-
+        User = _dbContext.Users.Where(x => x.Id == UserId).Single();
+        User.Medias = _dbContext.Media.Where(x => x.OwnerId == UserId).ToList();
         Chat = (from messages in _dbContext.Messages
                 where messages.Game.Id == GameId
                 select messages).ToList();
@@ -58,8 +110,7 @@
         // ChatMembers = _dbContext.Users.Where(x => ).ToList();
         if(Chat == null)
         {
-            Chat = new List
-    <ChatMessage>() {
+            Chat = new List<ChatMessage>() {
                 new ChatMessage() { User = _dbContext.Users.Where(x => x.UserName == Auth.GetUserName(_httpContextAccessor.HttpContext.User.Identity.Name)).Single(),
                 Text = "The very first message"
                 } 

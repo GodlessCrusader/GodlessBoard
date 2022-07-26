@@ -14,6 +14,9 @@ namespace GodlessBoard.GameModel
 
         public bool IsGridBinded => throw new NotImplementedException();
 
+        public int Height { get; set; }
+        public int Width { get; set; }
+
         public IDraggableBoardObject Copy(int x, int y)
         {
             throw new NotImplementedException();

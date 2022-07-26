@@ -17,6 +17,7 @@
     //</EditForm>
 //</div>
 }
+<img @ref="@ImageBuffer" src="@ImageBufferUrl" hidden/>
 <div ><BECanvas @ref="_canvas" Height="@height" Width="@width" ></BECanvas></div>
 
 <div style="top:20px; right:22%; position:absolute;">@ZoomGrade %</div>
@@ -45,6 +46,8 @@
             CanvasRenderAsync();
         } 
     }
+    public ElementReference ImageBuffer { get; set; }
+    public string ImageBufferUrl { get; set; } = string.Empty;
     public int lineWidth { get; set; }
     public int height { get; set; }
     public int width { get; set; }
@@ -58,18 +61,7 @@
     {
         c++;
     }
-    public async Task ZoomSliderChangeAsync()
-    {
-        await CanvasRenderAsync();
-    }
-    public async void ZoomInAsync()
-    {
-        ZoomGrade++;
-    }
-    public async void ZoomOutAsync()
-    {
-        ZoomGrade--;
-    }
+
     public async Task CanvasRenderAsync()
     {
         var game = Newtonsoft.Json.JsonConvert.DeserializeObject<GameModel.Game>(Game.JsonRepresentation);
@@ -80,8 +72,7 @@
         _canvasContext = await _canvas.CreateCanvas2DAsync();
         await GridRenderAsync();
         await TokensRenderAsync(game);
-        //await _canvasContext.FillRectAsync(0,0,20,20);
-        //await _canvasContext.StrokeTextAsync("sosi jepu", 10, 100);
+        
     }
     public async Task GridRenderAsync()
     {
@@ -107,9 +98,16 @@
     {
         foreach(var t in game.Tokens)
         {
-            var context = new WebElementReferenceContext(_jsRuntime);
-            var image = new ElementReference();
-            
+            ImageBufferUrl = t.ImageUrl;
+            await _canvasContext.DrawImageAsync(ImageBuffer,t.X - 0.5*t.Width,t.Y - 0.5*t.Height);
+
+        }
+
+        foreach(var t in game.BoardImages)
+        {
+            ImageBufferUrl = t.ImageUrl;
+            await _canvasContext.DrawImageAsync(ImageBuffer,t.X - 0.5*t.Width,t.Y - 0.5*t.Height);
+
         }
     }
     public async Task UpdateGameAsync()

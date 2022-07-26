@@ -5,8 +5,8 @@
 <head></head>
 <base href="/"/>
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/GodlessBoard.styles.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/GodlessBoard.styles.css" asp-append-version="true" />
 @{
     Layout = null;
     ViewData["Title"] = "Home page";
@@ -18,15 +18,16 @@
     {
         if(User.Identity.IsAuthenticated)
         {
-    <div id="Container">
-        <div id="BoardContainer">
-             <component type="typeof(BoardComponent)" param-Game="@Model.CurrentGame" render-mode="ServerPrerendered"/>
-        </div>
-        <div id="ChatContainer">
-             <component type="typeof(ChatComponent)"  param-GameId="@Model.CurrentGame.Id"  render-mode="ServerPrerendered"/>
-        </div>
-                    
-    </div>
+            <div id="Container">
+                    <div id="BoardContainer">
+                         <component type="typeof(BoardComponent)" param-Game="@Model.CurrentGame" render-mode="ServerPrerendered"/>
+                    </div>
+                    <div id="ChatContainer">
+                         
+                         <component  type="typeof(ChatComponent)"  param-GameId="@Model.CurrentGame.Id" param-UserId="@Model.CurrentUser.Id"  render-mode="ServerPrerendered"/>
+                    </div>
+                                
+            </div>
         }
         else
         {
