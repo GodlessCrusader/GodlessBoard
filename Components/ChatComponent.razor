@@ -44,7 +44,7 @@
                 if (m.Type == MediaType.Image)
                 {
                     <li><img style="height:20px; width:20px;" src="@m.Name"/>
-                    <button @onclick="() => AddToBoard(m)" class="btn btn-secondary">Add to the board</button>
+                    <button @onclick="() => AddBoardImage(m)" class="btn btn-secondary">Add to the board</button>
                     </li>
                 }
             }          
@@ -78,15 +78,18 @@
     public string SentMessageText { get; set; } = string.Empty;
     public User User { get; set; }
     public Game Game { get; set; }
+    public GameModel.Game Instance { get; set; }
     private string _chatDisplay = "block";
     private string _sheetsDisplay = "none";
     private string _audioDisplay =  "none";
     private string _imagesDisplay =  "none";
     private string _settingsDisplay =  "none";
 
-    public void AddToBoard(Media m)
+    public void AddBoardImage(Media m)
     {
-        
+        Instance.BoardImages.Add(new GameModel.BoardImage(200,200, m.Name, false));
+        Game.JsonRepresentation = Newtonsoft.Json.JsonConvert.SerializeObject(Instance);
+        _dbContext.SaveChanges();
     }
     public void ShowElement(ref string num)
     {
@@ -95,11 +98,11 @@
         _audioDisplay = "none";
         _imagesDisplay = "none";
         _settingsDisplay = "none";
-        
+
         num = "block";
     }
 
-   
+
     protected override void OnInitialized()
     {
         User = _dbContext.Users.Where(x => x.Id == UserId).Single();
@@ -118,6 +121,10 @@
         ChatMembers = (from users in _dbContext.Users
                        where userIds.Contains(users.Id)
                        select users).ToList();
+        Game = (from game in _dbContext.Games
+                where game.Id == GameId
+                select game).Single();
+        Instance = Newtonsoft.Json.JsonConvert.DeserializeObject<GameModel.Game>(Game.JsonRepresentation);
         // ChatMembers = _dbContext.Users.Where(x => ).ToList();
         if(Chat == null)
         {
