@@ -18,14 +18,16 @@
     {
         if(User.Identity.IsAuthenticated)
         {
-            <div id="Container">
-                <div id="BoardContainer">
-                    <component type="typeof(BoardComponent)" param-GameId="@Model.CurrentGame.Id" render-mode="ServerPrerendered"/>
-                </div>
-                <div id="ChatContainer">    
-                    <component style="height:100%;" type="typeof(ChatComponent)"  param-GameId="@Model.CurrentGame.Id" param-UserId="@Model.CurrentUser.Id"  render-mode="ServerPrerendered"/>
-                </div>                            
-            </div>
+    <div id="Container">
+                        <div id="BoardContainer">
+                             <component type="typeof(BoardComponent)" param-Game="@Model.CurrentGame" render-mode="ServerPrerendered"/>
+                        </div>
+                        <div id="ChatContainer">
+                             
+                             <component style="height:100%;" type="typeof(ChatComponent)"  param-GameId="@Model.CurrentGame.Id" param-UserId="@Model.CurrentUser.Id"  render-mode="ServerPrerendered"/>
+                        </div>
+                                    
+    </div>
         }
         else
         {
