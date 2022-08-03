@@ -33,7 +33,7 @@
 <button class="btn btn-primary" @onclick = "OnClick">onclick</button>
 <button class="btn btn-secondary"  @onclick = "CanvasRenderAsync">Canvas render</button>
 @code {
-    private int _zoomGrade = 100;
+    private int _zoomGrade = 20;
     public int ZoomGrade 
     {
         get
@@ -74,8 +74,8 @@
         var game = Newtonsoft.Json.JsonConvert.DeserializeObject<GameModel.Game>(Game.JsonRepresentation);
         Board = game.Tabs[0];
         lineWidth = Board.Grid.LineWidth;
-        height = (Board.Height)*ZoomGrade/100;
-        width = (Board.Width)*ZoomGrade/100;
+        height = (100 + Board.Height)*ZoomGrade/100;
+        width = (100 + Board.Width)*ZoomGrade/100;
         _canvasContext = await _canvas.CreateCanvas2DAsync();
         await GridRenderAsync();
         await TokensRenderAsync(game);
@@ -83,19 +83,13 @@
     }
     public async Task GridRenderAsync()
     {
-
-        var blackspaceSize = height/(Board.Grid.Size+2);
-        await _canvasContext.BeginPathAsync();
-
+        var blackspaceSize = height/(Board.Grid.Size+1);
         await _canvasContext.SetFillStyleAsync("black");
-        // await _canvasContext.RectAsync(0,0,blackspaceSize*Board.Grid.Size,height);
-        await _canvasContext.FillAsync();
         await _canvasContext.FillRectAsync(0,0,width,height);
         await _canvasContext.SetFillStyleAsync("white");
-        
-        await _canvasContext.FillRectAsync(blackspaceSize,blackspaceSize,blackspaceSize*(Board.Grid.Size), blackspaceSize*(Board.Grid.Size));
+        await _canvasContext.FillRectAsync(blackspaceSize,blackspaceSize,width-blackspaceSize*2, height-blackspaceSize*2);
         await _canvasContext.SetFillStyleAsync("black");
-        //await _canvasContext.BeginPathAsync();
+        await _canvasContext.BeginPathAsync();
         for(float i=blackspaceSize;i<height-blackspaceSize;i+=blackspaceSize)
         {
             //await _canvasContext.FillRectAsync(i, blackspaceSize, lineWidth, height-blackspaceSize*2);
@@ -118,18 +112,15 @@
         {
             
             ImageBufferUrl = t.ImageUrl;
-            await _canvasContext.DrawImageAsync(ImageBuffer,t.X - 0.5*t.Width,t.Y - 0.5*t.Height,t.Width/2, t.Height/2);
+            await _canvasContext.DrawImageAsync(ImageBuffer,t.X - 0.5*t.Width,t.Y - 0.5*t.Height,t.Width*ZoomGrade, t.Height*ZoomGrade);
             
         }
 
         foreach(var t in game.BoardImages)
         {
             ImageBufferUrl = t.ImageUrl;
-            await _canvasContext.DrawImageAsync(ImageBuffer,
-            t.X*ZoomGrade/100 - 0.5*t.Width*ZoomGrade/100,
-            t.Y*ZoomGrade/100 - 0.5*t.Height*ZoomGrade/100,
-            t.Width*ZoomGrade/100,
-            t.Height*ZoomGrade/100);
+            await _canvasContext.DrawImageAsync(ImageBuffer,t.X*ZoomGrade/100 - 0.5*t.Width*ZoomGrade/100,t.Y*ZoomGrade/100 - 0.5*t.Height*ZoomGrade/100);
+
         }
     }
     public async Task UpdateGameAsync()

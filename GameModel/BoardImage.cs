@@ -20,8 +20,8 @@ namespace GodlessBoard.GameModel
 
         public string ImageUrl { get; set; }
         public bool IsGridBinded { get; set; } = false;
-        public int Height { get; set; } = 100;
-        public int Width { get; set; } = 100;
+        public int Height { get; set; }
+        public int Width { get; set; }
 
         public IDraggableBoardObject Copy(int x, int y)
         {
