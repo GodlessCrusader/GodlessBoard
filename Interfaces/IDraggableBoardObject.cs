@@ -2,6 +2,7 @@
 {
     public interface IDraggableBoardObject
     {
+       
         public int X { get;}
         public int Y { get;}
         public int Height { get; set; }

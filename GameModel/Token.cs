@@ -6,6 +6,17 @@ namespace GodlessBoard.GameModel
 {
     public class Token : IDraggableBoardObject
     {
+        public Token(string name, string imageUrl, int x, int y, Layer currentLayer, int width, int height)
+        {
+            Name = name;
+            ImageUrl = imageUrl;
+            X = x;
+            Y = y;
+            CurrentLayer = currentLayer;
+            Height = height;
+            Width = width;
+        }
+
         public string Name { get; set; }
         public string ImageUrl { get; set; }
         public int X { get; set; }

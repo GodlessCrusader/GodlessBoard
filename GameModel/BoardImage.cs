@@ -6,12 +6,14 @@ namespace GodlessBoard.GameModel
 {
     public class BoardImage : IDraggableBoardObject
     {
-        public BoardImage(int x, int y, string imageUrl, bool isGridBinded)
+        public BoardImage(string imageUrl, int x, int y, bool isGridBinded, int width, int height)
         {
             X = x;
             Y = y;
             ImageUrl = imageUrl;
             IsGridBinded = isGridBinded;
+            Height = height;
+            Width = width;
         }
 
         public int X { get; private set; } = 0;
@@ -25,7 +27,7 @@ namespace GodlessBoard.GameModel
 
         public IDraggableBoardObject Copy(int x, int y)
         {
-            return new BoardImage(x, y, ImageUrl, IsGridBinded);
+            return new BoardImage(ImageUrl, x, y, IsGridBinded, Width, Height);
         }
 
         public void Move(int x, int y)
