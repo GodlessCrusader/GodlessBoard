@@ -47,6 +47,10 @@
     <Folder Include="wwwroot\upload\userMedia\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\GameModel\GameModel.csproj" />
+  </ItemGroup>
+
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

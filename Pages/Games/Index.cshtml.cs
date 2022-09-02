@@ -11,6 +11,7 @@ namespace GodlessBoard.Pages.Games
 {
     public class IndexModel : PageModel
     {
+        public string ClientUrl = "https://localhost:7140/play/";
         private readonly GodlessBoard.Data.MyDbContext _context;
 
         public IndexModel(GodlessBoard.Data.MyDbContext context)

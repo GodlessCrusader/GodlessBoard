@@ -4,6 +4,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.2.32519.379
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GodlessBoard", "GodlessBoard.csproj", "{6599B16B-F1C8-4B16-89E6-FA28DF0B4171}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2BACD030-65AF-45DC-A43D-A3EFF9AD3860} = {2BACD030-65AF-45DC-A43D-A3EFF9AD3860}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameModel", "..\GameModel\GameModel.csproj", "{2BACD030-65AF-45DC-A43D-A3EFF9AD3860}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientSideBoard", "..\ClientSideBoard\ClientSideBoard.csproj", "{9D75CCBB-38B8-42C6-A216-867A045D361D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +22,14 @@ Global
 		{6599B16B-F1C8-4B16-89E6-FA28DF0B4171}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6599B16B-F1C8-4B16-89E6-FA28DF0B4171}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6599B16B-F1C8-4B16-89E6-FA28DF0B4171}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BACD030-65AF-45DC-A43D-A3EFF9AD3860}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BACD030-65AF-45DC-A43D-A3EFF9AD3860}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BACD030-65AF-45DC-A43D-A3EFF9AD3860}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BACD030-65AF-45DC-A43D-A3EFF9AD3860}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D75CCBB-38B8-42C6-A216-867A045D361D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D75CCBB-38B8-42C6-A216-867A045D361D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D75CCBB-38B8-42C6-A216-867A045D361D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D75CCBB-38B8-42C6-A216-867A045D361D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

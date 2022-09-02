@@ -41,7 +41,7 @@
                 <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-                <a asp-page="./Play" asp-route-GameId="@item.Id">Launch</a>
+                <a href="@string.Concat(Model.ClientUrl, item.Id)">Launch</a>
             </td>
         </tr>
 }

@@ -39,6 +39,7 @@ app.MapBlazorHub();
 
 app.UseBlazorFrameworkFiles();
 
+
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllerRoute(

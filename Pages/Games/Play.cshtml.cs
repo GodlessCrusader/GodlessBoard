@@ -1,5 +1,4 @@
 using GodlessBoard.Data;
-using GodlessBoard.GameModel;
 using GodlessBoard.Models;
 using GodlessBoard.Services;
 using Microsoft.AspNetCore.Mvc;

@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using GodlessBoard.Models;
 using GodlessBoard.Services;
 using System.ComponentModel.DataAnnotations;
-using GodlessBoard.GameModel;
+using GameModel;
 
 namespace GodlessBoard.Pages.Games
 {
@@ -49,8 +44,8 @@ namespace GodlessBoard.Pages.Games
             game.Name = Game.Name;
             game.Bio = Game.Bio;
             game.JsonRepresentation = Newtonsoft.Json.JsonConvert.SerializeObject(
-                new GodlessBoard.GameModel.Game(game.Name,
-                    new GodlessBoard.GameModel.Player(owner.DisplayName, Role.Owner)));
+                new GameModel.Game(game.Name,
+                    new GameModel.Player(owner.DisplayName, Role.Owner)));
             
             _context.Games.Add(game);
             
