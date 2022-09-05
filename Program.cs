@@ -15,7 +15,10 @@ builder.Services.AddAuthentication("GodlessCookie").AddCookie("GodlessCookie", o
 options.Cookie.Name = "GodlessCookie"
 ); 
 var connectionString = builder.Configuration.GetConnectionString("MyDbContextConnection"); ;
-
+/*builder.Services.AddCors(p => p.AddPolicy("clientPolicy", build =>
+{
+    build.WithOrigins("")
+}));*/
 builder.Services.AddDbContext<MyDbContext>(options =>
     options.UseSqlServer(connectionString));
 var app = builder.Build();
@@ -38,6 +41,14 @@ app.MapRazorPages();
 app.MapBlazorHub();
 
 app.UseBlazorFrameworkFiles();
+
+app.UseCors(policy =>
+           policy.WithOrigins("https://localhost:7140",
+            "https://localhost:5140")
+           .AllowAnyMethod()
+           .AllowAnyHeader()
+           
+); ; ;
 
 
 app.UseEndpoints(endpoints =>
