@@ -7,17 +7,18 @@ namespace GodlessBoard.Services
 {
     public static class MediaUploadRouter
     {
-        public static async Task<string> UploadMedia(byte[] e, string ownerName, string oldFileName, string webRootPath)
+       
+        public static async Task<string> UploadMedia(byte[] e, string ownerName, string oldFileName, string webRootPath, string key)
         {
             
             string uploadPath;
             StringBuilder relativePath = new StringBuilder();
-            var userDirectories = ($"{GeneratePath(e, ownerName)}{Path.GetExtension(oldFileName)}").Split('\\');
+            var userDirectories = ($"{GeneratePath(e, ownerName, key)}{Path.GetExtension(oldFileName)}").Split('\\');
             relativePath.Append("../upload/userMedia/");
             relativePath.Append(userDirectories[0]);
             relativePath.Append('/');
             relativePath.Append(userDirectories[1]);
-            uploadPath = Path.Combine(webRootPath,"upload","userMedia", $"{GeneratePath(e, ownerName)}{Path.GetExtension(oldFileName)}");
+            uploadPath = Path.Combine(webRootPath,"upload","userMedia", $"{GeneratePath(e, ownerName, key)}{Path.GetExtension(oldFileName)}");
             
             if (!Directory.Exists(uploadPath.Replace(userDirectories[1], string.Empty)))
                 Directory.CreateDirectory(uploadPath.Replace(userDirectories[1], string.Empty));
@@ -38,14 +39,14 @@ namespace GodlessBoard.Services
             
         }
 
-        private static string GeneratePath(byte[] mediaBytes, string ownerName)
+        private static string GeneratePath(byte[] mediaBytes, string ownerName, string key)
         {
             if (mediaBytes == null || ownerName == null)
                 throw new NullReferenceException();
             else
             {
                 string uploadPath;
-                using (var hmac = new HMACSHA256(Encoding.UTF8.GetBytes("sas")))
+                using (var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(key)))
                 {
                     var ownerNameHash = (hmac.ComputeHash(Encoding.UTF8.GetBytes(ownerName))).ToHex(false);
                     var mediaNameHash = (hmac.ComputeHash(mediaBytes)).ToHex(false);

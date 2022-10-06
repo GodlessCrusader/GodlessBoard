@@ -1,11 +1,13 @@
 using GodlessBoard.Data;
 using GodlessBoard.Pages.Account;
+using GodlessBoard.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddSingleton<HashGenerator>();
 builder.Services.AddRazorPages();
 builder.Services.AddControllers();
 builder.Services.AddServerSideBlazor();
@@ -20,7 +22,7 @@ var connectionString = builder.Configuration.GetConnectionString("MyDbContextCon
     build.WithOrigins("")
 }));*/
 builder.Services.AddDbContext<MyDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseNpgsql(connectionString));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -41,10 +43,8 @@ app.MapRazorPages();
 app.MapBlazorHub();
 
 app.UseBlazorFrameworkFiles();
-
 app.UseCors(policy =>
-           policy.WithOrigins("https://localhost:7140",
-            "https://localhost:5140")
+           policy.WithOrigins(app.Configuration["CorsOrigins"])
            .AllowAnyMethod()
            .AllowAnyHeader()
            

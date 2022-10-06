@@ -58,7 +58,7 @@
             }
 
 
-            imgUrl = MediaUploadRouter.UploadMedia(bytes, CurrentUser.UserName, e.File.Name, _env.WebRootPath).Result;
+            imgUrl = MediaUploadRouter.UploadMedia(bytes, CurrentUser.UserName, e.File.Name, _env.WebRootPath, Configuration.GetSection("AppSettings:Key").Value).Result;
 
 
 
