@@ -4,16 +4,16 @@
 }
 <div class="container border">
     <h4>Login</h4>
-    <form method="post">
+    <form class="align-content-center" method="post">
         <div class="text-danger" asp-validation-summary="ModelOnly"></div>
-        <label asp-for="Credential.UserName"></label>
-        <input type="text" asp-for="Credential.UserName">
+        <label class="form-label" asp-for="Credential.UserName"></label>
+        <input class="form-control" type="text" asp-for="Credential.UserName">
         <span asp-validation-for="Credential.UserName"></span>
         <br>
-        <label asp-for="Credential.Password"></label>
-        <input type="password" asp-for="Credential.Password">
+        <label class="form-label" asp-for="Credential.Password"></label>
+        <input class="form-control" type="password" asp-for="Credential.Password">
         <span asp-validation-for="Credential.Password"></span>
         <br />
-        <button type="submit">Log in</button>
+        <button class="btn-primary" type="submit">Log in</button>
     </form>
 </div>

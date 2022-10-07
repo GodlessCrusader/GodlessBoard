@@ -2,10 +2,16 @@ using GodlessBoard.Data;
 using GodlessBoard.Pages.Account;
 using GodlessBoard.Services;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.KnownProxies.Add(IPAddress.Parse("10.0.0.100"));
+});
 // Add services to the container.
 builder.Services.AddSingleton<HashGenerator>();
 builder.Services.AddRazorPages();
@@ -17,10 +23,7 @@ builder.Services.AddAuthentication("GodlessCookie").AddCookie("GodlessCookie", o
 options.Cookie.Name = "GodlessCookie"
 ); 
 var connectionString = builder.Configuration.GetConnectionString("MyDbContextConnection"); ;
-/*builder.Services.AddCors(p => p.AddPolicy("clientPolicy", build =>
-{
-    build.WithOrigins("")
-}));*/
+
 builder.Services.AddDbContext<MyDbContext>(options =>
     options.UseNpgsql(connectionString));
 var app = builder.Build();
@@ -28,12 +31,16 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
+    app.UseHttpsRedirection();
     app.UseExceptionHandler("/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
-app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
@@ -43,12 +50,14 @@ app.MapRazorPages();
 app.MapBlazorHub();
 
 app.UseBlazorFrameworkFiles();
+
 app.UseCors(policy =>
-           policy.WithOrigins(app.Configuration["CorsOrigins"])
+           policy.WithOrigins(app.Configuration.GetSection("CORS:client").Value)
            .AllowAnyMethod()
            .AllowAnyHeader()
            
 ); ; ;
+
 
 
 app.UseEndpoints(endpoints =>

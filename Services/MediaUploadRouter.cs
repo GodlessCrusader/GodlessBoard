@@ -1,4 +1,5 @@
-﻿using GodlessBoard.Models;
+﻿using Blazor.Extensions.Canvas.WebGL;
+using GodlessBoard.Models;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Security.Cryptography;
 using System.Text;
@@ -8,30 +9,39 @@ namespace GodlessBoard.Services
     public static class MediaUploadRouter
     {
        
-        public static async Task<string> UploadMedia(byte[] e, string ownerName, string oldFileName, string webRootPath, string key)
+        public static async Task<Media> UploadMediaAsync(byte[] e, string ownerName, string oldFileName, string webRootPath, string key)
         {
             
             string uploadPath;
             StringBuilder relativePath = new StringBuilder();
             var userDirectories = ($"{GeneratePath(e, ownerName, key)}{Path.GetExtension(oldFileName)}").Split('\\');
+            
             relativePath.Append("../upload/userMedia/");
             relativePath.Append(userDirectories[0]);
             relativePath.Append('/');
             relativePath.Append(userDirectories[1]);
-            uploadPath = Path.Combine(webRootPath,"upload","userMedia", $"{GeneratePath(e, ownerName, key)}{Path.GetExtension(oldFileName)}");
+            
+            uploadPath = Path.Combine(webRootPath,
+                "upload",
+                "userMedia",
+                $"{GeneratePath(e, ownerName, key)}{Path.GetExtension(oldFileName)}");
             
             if (!Directory.Exists(uploadPath.Replace(userDirectories[1], string.Empty)))
                 Directory.CreateDirectory(uploadPath.Replace(userDirectories[1], string.Empty));
+            
             if (!File.Exists(uploadPath))
             {
                 using (var fs = new FileStream(uploadPath, FileMode.Create))
                 {
                     fs.Write(e, 0, e.Length);
-                }
-                return relativePath.ToString();
+                } 
             }
-            else
-                return string.Empty;
+
+            return new Media() {
+                UserDisplayName = oldFileName,
+                Name = relativePath.ToString(),
+                Type = MediaType.Image,
+            };
 
             
             
@@ -39,6 +49,14 @@ namespace GodlessBoard.Services
             
         }
 
+        public static bool CheckExistance(byte[] e, string ownerName, string oldFileName, string webRootPath, string key)
+        {
+            var uploadPath = Path.Combine(webRootPath,
+                "upload",
+                "userMedia",
+                $"{GeneratePath(e, ownerName, key)}{Path.GetExtension(oldFileName)}");
+            return File.Exists(uploadPath);
+        }
         private static string GeneratePath(byte[] mediaBytes, string ownerName, string key)
         {
             if (mediaBytes == null || ownerName == null)

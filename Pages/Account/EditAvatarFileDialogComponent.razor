@@ -13,25 +13,75 @@
 <form>
     <label>Profile picture</label>
     <img src="@(imgUrl)" height="100" width="100">
-    <InputFile OnChange="UploadImage" />
-    <button @onclick="ChangeButtonText">Change profile picture</button>
+    <InputFile OnChange="UploadImageAsync" />
+    <button @onclick="ChangeUserAvatarAsync">Change profile picture</button>
     <span class="text-dngr">@SpanText</span>
 </form>
-<label>@exception</label>
-<button @onclick="@ChangeButtonText">@buttonText</button>
 @code {
     [Parameter]
     public User? CurrentUser { get; set; }
     [Parameter]
     public string imgUrl { get; set; }
     public string SpanText { get; set; } = string.Empty;
-    string exception = string.Empty;
-    public string buttonText { get; set; } = "buttonText";
-    private void ChangeButtonText()
+    Media Avatar;
+    IBrowserFile Image;
+
+    private async Task ChangeUserAvatarAsync()
     {
-        buttonText = "sas";
+        if (Avatar != null && Image != null)
+        {
+
+            await DownloadImageAsync();
+
+            _context.Users.Where(x => x.Id == CurrentUser.Id).Single().ProfilePicUrl = $"{Avatar.Name}";
+
+            _context.SaveChanges();
+
+        }
+        else
+        {
+            SpanText = "Please select target image";
+        }
+
+
     }
-    private async Task UploadImage(InputFileChangeEventArgs e)
+
+    private async Task DownloadImageAsync()
+    {
+        byte[] bytes;
+        using (var ms = new MemoryStream())
+        {
+            var istream = Image.OpenReadStream();
+            await istream.CopyToAsync(ms);
+            bytes = ms.ToArray();
+            istream.Close();
+            istream.Dispose();
+        }
+
+        Avatar = MediaUploadRouter.UploadMediaAsync(
+            bytes,
+            CurrentUser.UserName,
+            Image.Name,
+            _env.WebRootPath,
+            Configuration.GetSection("AppSettings:Key").Value).Result;
+
+        if (MediaUploadRouter.CheckExistance(bytes,
+            CurrentUser.UserName,
+            Image.Name,
+            _env.WebRootPath,
+            Configuration.GetSection("AppSettings:Key").Value))
+            {
+                SpanText = "This image already exists in your library";
+                return;
+            }
+            
+
+        _context.Users.Where(x => x.Id == CurrentUser.Id).Single().CurrentMediaWeight += (ulong)Image.Size;
+        _context.Media.Add(Avatar);
+        _context.SaveChanges();
+    }
+
+    private async Task UploadImageAsync(InputFileChangeEventArgs e)
     {
         if(!e.File.ContentType.Contains("image") || CurrentUser == null)
         {
@@ -47,44 +97,7 @@
             return;
         }else
         {
-            byte[] bytes;
-            using(var ms = new MemoryStream())
-            {
-                var istream = e.File.OpenReadStream();
-                await istream.CopyToAsync(ms);
-                bytes = ms.ToArray();
-                istream.Close();
-                istream.Dispose();
-            }
-
-
-            imgUrl = MediaUploadRouter.UploadMedia(bytes, CurrentUser.UserName, e.File.Name, _env.WebRootPath, Configuration.GetSection("AppSettings:Key").Value).Result;
-
-
-
-            if(!string.IsNullOrEmpty(imgUrl))
-            {
-                var media = new Media()
-                {
-                    UserDisplayName = e.File.Name ,
-                    Name = imgUrl,
-                    Type = MediaType.Image,
-                    Owner = _context.Users.Where(x => x.Id == CurrentUser.Id).Single(),
-                    Weight = e.File.Size
-                };
-
-                _context.Users.Where(x => x.Id == CurrentUser.Id).Single().ProfilePicUrl = $"{media.Name}";
-                _context.Users.Where(x => x.Id == CurrentUser.Id).Single().CurrentMediaWeight += (ulong)e.File.Size;
-                _context.Media.Add(media);
-                _context.SaveChanges();
-                
-            }
-            else
-            {
-                SpanText = "This image already exists";
-            }
-
-            
+            Image = e.File;
         }
         
     }
