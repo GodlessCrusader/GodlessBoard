@@ -1,0 +1,17 @@
+﻿@using GodlessBoard.Models
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+
+<input type="text">
+<button class="btn-primary rounded" @onclick="ChangeObjectAsync">Submit</button>
+@code {
+    [Parameter]
+    public object TargetObject { get; set; }
+    [Parameter]
+    public Type TargetProperty { get; set; }
+
+    public async Task ChangeObjectAsync()
+    {
+        
+    }
+}

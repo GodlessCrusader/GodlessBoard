@@ -1,5 +1,6 @@
 ﻿using GodlessBoard.Models;
 using GodlessBoard.Pages.Account;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -10,54 +11,32 @@ namespace GodlessBoard.Services
     public class HashGenerator
     {
         private readonly IConfiguration _configuration;
-        public string Jwt { get; set; }
-        public byte[] PasswordHash { get; private set; }
-        public byte[] PasswordSalt { get; private set; }
-        public HashGenerator()
-        {
-
-        }
+        
         public HashGenerator(IConfiguration configuration)
         {
             _configuration = configuration;
         }
-        public void GenerateHash(string password)
+        public void GenerateHash(string password, ref byte[] passwordSalt, out byte[] passwordHash )
         {
-            using(var hmac = new HMACSHA512())
-            {
-                PasswordSalt = hmac.Key;
-                PasswordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            }
+            if(passwordSalt == null)
+                using(var hmac = new HMACSHA512())
+                {
+                    passwordSalt = hmac.Key;
+                    passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                }
+            else
+                using (var hmac = new HMACSHA512(passwordSalt))
+                {
+                   passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                }
         }
-        public void GenerateHash(string password, byte[] salt)
-        {
-            using (var hmac = new HMACSHA512(salt))
-            {
-                PasswordSalt = salt;
-                PasswordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            }
-        }
-        public void GenerateJwt(User user)
-        {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.UserName)
-            };
-            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Key").Value));
-
-            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-
-            var token = new JwtSecurityToken(
-                claims: claims,
-                expires: DateTime.Now.AddHours(1),
-                signingCredentials: credentials
-                );
-            Jwt = new JwtSecurityTokenHandler().WriteToken(token);
-        }
+        
         public bool VerifyUserData(User user, Credential credential)
         {
-            GenerateHash(credential.Password, user.PasswordSalt);
-            return (user.PasswordHash.SequenceEqual(this.PasswordHash));
+            byte[] passwordHash;
+            var passwordSalt = user.PasswordSalt;
+            GenerateHash(credential.Password, ref passwordSalt, out passwordHash);
+            return (user.PasswordHash.SequenceEqual(passwordHash));
                
         }
     }

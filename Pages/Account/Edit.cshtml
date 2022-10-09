@@ -1,7 +1,7 @@
 ﻿@page
 
 @model GodlessBoard.Pages.Account.EditModel
-<head>123</head>
+<head></head>
 <base href="/">
 @{
     if(User.Identity.IsAuthenticated)
@@ -10,8 +10,13 @@
         <h3>Your profile:</h3><a asp-page="/Account/Edit">Edit</a>
         <hr>
         <h5>Display name</h5>
-        <textarea asp-for="@Model.CurrentUser.DisplayName"></textarea>
+        <form>
+            <input type="text" asp-for="@Model.CurrentUser.DisplayName">
+            <button class="btn-primary rounded">Submit</button>
+        </form>
         
+        <hr>
+        <h5>Profile picture</h5>
             <component type="typeof(EditAvatarFileDialogComponent)" param-CurrentUser = "@Model.CurrentUser" param-imgUrl="@Model.CurrentUser.ProfilePicUrl" render-mode="ServerPrerendered" ></component>
                          
         <hr>

@@ -7,8 +7,10 @@
             <h3>Your profile:</h3><a asp-page="/Account/Edit">Edit</a>
             <hr>
             <h5>Display name</h5>
-            <label class="col-form-label" asp-for="@Model.CurrentUser.DisplayName"></label>
-             @if(Model.CurrentUser.ProfilePicUrl != null){
+                    <label class="col-form-label">@Model.CurrentUser.DisplayName</label>
+            <hr>
+            <h5>Profile picture</h5>           
+            @if(Model.CurrentUser.ProfilePicUrl != null){
                 <img src="@(Model.CurrentUser.ProfilePicUrl)" height="100" width="100">
             }
             else
@@ -18,10 +20,10 @@
 
             <hr>
             <h5>Email/Login</h5>
-                    <label class="col-form-label" asp-for="@Model.CurrentUser.UserName"></label>
+                            <label class="col-form-label" asp-for="@Model.CurrentUser.UserName">@Model.CurrentUser.UserName.ToLower()</label>
             <hr>
             <h5>About me</h5>
-                    <label class="col-form-label" asp-for="@Model.CurrentUser.Bio"></label>
+                            <label class="col-form-label" asp-for="@Model.CurrentUser.Bio">@Model.CurrentUser.Bio</label>
             
         </div>       
     }

@@ -4,19 +4,19 @@
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Web
 @using System.Net.Http.Headers
-@inject IConfiguration Configuration
+@inject MediaUploadRouter _mediaUploadRouter
 @inject MyDbContext _context
 @inject IHttpContextAccessor HttpContextAcessor
 @inject IWebHostEnvironment _env
 @inject HttpClient client
 
 <form>
-    <label>Profile picture</label>
     <img src="@(imgUrl)" height="100" width="100">
     <InputFile OnChange="UploadImageAsync" />
-    <button @onclick="ChangeUserAvatarAsync">Change profile picture</button>
+    <button class="btn-primary rounded" @onclick="ChangeUserAvatarAsync">Change profile picture</button>
     <span class="text-dngr">@SpanText</span>
 </form>
+
 @code {
     [Parameter]
     public User? CurrentUser { get; set; }
@@ -58,23 +58,21 @@
             istream.Dispose();
         }
 
-        Avatar = MediaUploadRouter.UploadMediaAsync(
+        Avatar = _mediaUploadRouter.UploadMediaAsync(
             bytes,
             CurrentUser.UserName,
             Image.Name,
-            _env.WebRootPath,
-            Configuration.GetSection("AppSettings:Key").Value).Result;
+            _env.WebRootPath).Result;
 
-        if (MediaUploadRouter.CheckExistance(bytes,
+        if (_mediaUploadRouter.CheckExistance(bytes,
             CurrentUser.UserName,
             Image.Name,
-            _env.WebRootPath,
-            Configuration.GetSection("AppSettings:Key").Value))
-            {
-                SpanText = "This image already exists in your library";
-                return;
-            }
-            
+            _env.WebRootPath))
+        {
+            SpanText = "This image already exists in your library";
+            return;
+        }
+
 
         _context.Users.Where(x => x.Id == CurrentUser.Id).Single().CurrentMediaWeight += (ulong)Image.Size;
         _context.Media.Add(Avatar);
@@ -98,7 +96,10 @@
         }else
         {
             Image = e.File;
+            await DownloadImageAsync();
+            imgUrl = Avatar.Name;
         }
         
     }
+
 }

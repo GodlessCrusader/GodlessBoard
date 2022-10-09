@@ -13,11 +13,12 @@ namespace GodlessBoard.Pages.Account
         [BindProperty]
         public Credential Credential { get; set; }
         private readonly IConfiguration _configuration;
-        public LoginModel(MyDbContext context,IConfiguration configuration)
+        private readonly HashGenerator _hashGenerator;
+        public LoginModel(MyDbContext context,IConfiguration configuration, HashGenerator hashGenerator)
         {
             _context = context;
             _configuration=configuration;
-  
+            _hashGenerator=hashGenerator;
         }
 
         public void OnGet()
@@ -35,8 +36,8 @@ namespace GodlessBoard.Pages.Account
                 ModelState.AddModelError(string.Empty, "There is no such Email-Password combination.");
                 return Page();
             }
-                var hg = new HashGenerator();
-            if (!hg.VerifyUserData(user.First(), Credential))
+                
+            if (!_hashGenerator.VerifyUserData(user.First(), Credential))
             {
                 ModelState.AddModelError(string.Empty, "There is no such Email-Password combination.");
                 return Page();

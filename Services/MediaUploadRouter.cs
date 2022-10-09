@@ -6,12 +6,16 @@ using System.Text;
 
 namespace GodlessBoard.Services
 {
-    public static class MediaUploadRouter
+    public class MediaUploadRouter
     {
-       
-        public static async Task<Media> UploadMediaAsync(byte[] e, string ownerName, string oldFileName, string webRootPath, string key)
+        private IConfiguration _configuration;
+        public MediaUploadRouter(IConfiguration configuration)
         {
-            
+            _configuration = configuration;
+        }
+        public async Task<Media> UploadMediaAsync(byte[] e, string ownerName, string oldFileName, string webRootPath)
+        {
+            var key = _configuration.GetSection("AppSettings:Key").Value;
             string uploadPath;
             StringBuilder relativePath = new StringBuilder();
             var userDirectories = ($"{GeneratePath(e, ownerName, key)}{Path.GetExtension(oldFileName)}").Split('\\');
@@ -43,14 +47,11 @@ namespace GodlessBoard.Services
                 Type = MediaType.Image,
             };
 
-            
-            
-
-            
         }
 
-        public static bool CheckExistance(byte[] e, string ownerName, string oldFileName, string webRootPath, string key)
+        public bool CheckExistance(byte[] e, string ownerName, string oldFileName, string webRootPath)
         {
+            var key = _configuration.GetSection("AppSettings:Key").Value;
             var uploadPath = Path.Combine(webRootPath,
                 "upload",
                 "userMedia",
@@ -75,18 +76,6 @@ namespace GodlessBoard.Services
             }
             
         }
-
-        private static string ToHex(this byte[] bytes, bool upperCase)
-        {
-            StringBuilder result = new StringBuilder(bytes.Length * 2);
-
-            for (int i = 0; i < bytes.Length; i++)
-                result.Append(bytes[i].ToString(upperCase ? "X2" : "x2"));
-
-            return result.ToString();
-        }
-
-
-
     }
+    
 }

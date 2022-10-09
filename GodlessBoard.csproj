@@ -44,11 +44,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\upload\userMedia\" />
+    <ProjectReference Include="..\GameModel\GameModel.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GameModel\GameModel.csproj" />
+    <Folder Include="wwwroot\upload\" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>

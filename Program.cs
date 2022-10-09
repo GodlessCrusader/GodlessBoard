@@ -13,6 +13,7 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
     options.KnownProxies.Add(IPAddress.Parse("10.0.0.100"));
 });
 // Add services to the container.
+builder.Services.AddSingleton<MediaUploadRouter>();
 builder.Services.AddSingleton<HashGenerator>();
 builder.Services.AddRazorPages();
 builder.Services.AddControllers();
