@@ -28,13 +28,19 @@ namespace GodlessBoard.Pages.Account
             if (!ModelState.IsValid) 
                 return Page();
             var user = from users in _context.Users
-                       where users.UserName == Credential.UserName
+                       where users.UserName == Credential.UserName.ToUpper()
                        select users;
-            if(user == null || user.Count()<1) 
-                return BadRequest("There is no such Email-Password combination.");
-            var hg = new HashGenerator();
+            if (user == null || user.Count() < 1)
+            {
+                ModelState.AddModelError(string.Empty, "There is no such Email-Password combination.");
+                return Page();
+            }
+                var hg = new HashGenerator();
             if (!hg.VerifyUserData(user.First(), Credential))
-                return BadRequest("There is no such Email-Password combination.");
+            {
+                ModelState.AddModelError(string.Empty, "There is no such Email-Password combination.");
+                return Page();
+            }
             else
             {
                 await Auth.Identify(HttpContext, Credential.UserName, user.First().DisplayName);

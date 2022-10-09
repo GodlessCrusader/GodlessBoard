@@ -52,7 +52,7 @@ app.MapBlazorHub();
 app.UseBlazorFrameworkFiles();
 
 app.UseCors(policy =>
-           policy.WithOrigins(app.Configuration.GetSection("CORS:client").Value)
+           policy.WithOrigins(app.Configuration.GetSection("CORS:client").Value, app.Configuration.GetSection("CORS:self").Value)
            .AllowAnyMethod()
            .AllowAnyHeader()
            
