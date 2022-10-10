@@ -10,27 +10,25 @@
         <h3>Your profile:</h3><a asp-page="/Account/Edit">Edit</a>
         <hr>
         <h5>Display name</h5>
-        <form>
-            <input type="text" asp-for="@Model.CurrentUser.DisplayName">
-            <button class="btn-primary rounded">Submit</button>
-        </form>
-        
+        <label>@Model.CurrentUser.DisplayName</label> 
+            <component type="typeof(TextFieldEditor)" render-mode="ServerPrerendered" param-User="@Model.CurrentUser"/>
+               
         <hr>
         <h5>Profile picture</h5>
             <component type="typeof(EditAvatarFileDialogComponent)" param-CurrentUser = "@Model.CurrentUser" param-imgUrl="@Model.CurrentUser.ProfilePicUrl" render-mode="ServerPrerendered" ></component>
-                         
+                             
         <hr>
         <h5>About me</h5>
-        <label asp-for="@Model.CurrentUser.Bio"></label>
-                        
+            <component type="typeof(TextAreaEditor)" render-mode="ServerPrerendered" param-User="@Model.CurrentUser"/>
+                            
     </div>       
     }
     else
     {
     <div>
-        <h5>You are not logged in. Please log in existing account or register a new one!</h5>
-        <a asp-page="/Account/Login">Log in</a>
-        <a asp-page="/Account/Register">Register</a>
+            <h5>You are not logged in. Please log in existing account or register a new one!</h5>
+            <a asp-page="/Account/Login">Log in</a>
+            <a asp-page="/Account/Register">Register</a>
     </div>
     }
 }

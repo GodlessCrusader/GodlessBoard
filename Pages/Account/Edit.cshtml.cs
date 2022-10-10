@@ -29,6 +29,13 @@ namespace GodlessBoard.Pages.Account
                 }
             }
         }
+
+        public void ChangeUserDisplayName(string newName)
+        {
+            CurrentUser.DisplayName = newName;
+            _context.Users.Where(x => x.Id == CurrentUser.Id).Single().DisplayName = newName;
+            _context.SaveChanges();
+        }
         
        
 

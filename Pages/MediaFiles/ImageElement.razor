@@ -1,0 +1,27 @@
+﻿@using GodlessBoard.Data
+@using GodlessBoard.Models
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@inject MyDbContext _dbContext
+<div>
+    <h6>@Image.UserDisplayName</h6>
+    <img src="@Image.Name" height="200" width="200">
+    <button @onclick="DeleteAsync" class="btn-secondary">Delete</button>
+    <button @onclick="RenameAsync" class="btn-secondary">Rename</button>
+    <hr>
+</div>
+@code {
+    [Parameter]
+    public Media Image { get; set; }
+
+    public async Task DeleteAsync()
+    {
+
+        _dbContext.Media.Remove(Image);
+    }
+
+    public async Task RenameAsync()
+    {
+
+    }
+}

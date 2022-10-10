@@ -31,7 +31,7 @@
         if (Avatar != null && Image != null)
         {
 
-            await DownloadImageAsync();
+            //await DownloadImageAsync();
 
             _context.Users.Where(x => x.Id == CurrentUser.Id).Single().ProfilePicUrl = $"{Avatar.Name}";
 
@@ -57,6 +57,15 @@
             istream.Close();
             istream.Dispose();
         }
+        var imageExists = false;
+        if (_mediaUploadRouter.CheckExistance(bytes,
+            CurrentUser.UserName,
+            Image.Name,
+            _env.WebRootPath))
+        {
+            SpanText = "This image already exists in your library";
+            imageExists = true;
+        }
 
         Avatar = _mediaUploadRouter.UploadMediaAsync(
             bytes,
@@ -64,19 +73,21 @@
             Image.Name,
             _env.WebRootPath).Result;
 
-        if (_mediaUploadRouter.CheckExistance(bytes,
-            CurrentUser.UserName,
-            Image.Name,
-            _env.WebRootPath))
+        if(!imageExists)
         {
-            SpanText = "This image already exists in your library";
-            return;
+            Avatar.Weight = Image.Size;
+            Avatar.OwnerId = CurrentUser.Id;
+            _context.Users.Where(x => x.Id == CurrentUser.Id).Single().CurrentMediaWeight += (ulong)Image.Size;
+            _context.Media.Add(Avatar);
+            _context.SaveChanges();
         }
+        
+
+        
+        
 
 
-        _context.Users.Where(x => x.Id == CurrentUser.Id).Single().CurrentMediaWeight += (ulong)Image.Size;
-        _context.Media.Add(Avatar);
-        _context.SaveChanges();
+        
     }
 
     private async Task UploadImageAsync(InputFileChangeEventArgs e)

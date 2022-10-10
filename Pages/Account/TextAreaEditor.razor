@@ -1,10 +1,11 @@
-﻿@using GodlessBoard.Data
+﻿
+@using GodlessBoard.Data
 @using GodlessBoard.Models
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Web
 @inject MyDbContext _dbContext 
 
-<input type="text" @bind="Input">
+<textarea @bind="Input">@User.Bio</textarea>
 <button class="btn-primary rounded" @onclick="@ChangeObjectAsync">@ButtonText</button>
 @code {
     [Parameter]
@@ -13,10 +14,10 @@
     public string Input { get; set; }
     public async Task ChangeObjectAsync()
     {
-        if(!string.IsNullOrEmpty(Input))
+        if (!string.IsNullOrEmpty(Input))
         {
             User.DisplayName = Input;
-            _dbContext.Users.Where(x => x.Id == User.Id).Single().DisplayName = Input;
+            _dbContext.Users.Where(x => x.Id == User.Id).Single().Bio = Input;
             _dbContext.SaveChanges();
         }
     }

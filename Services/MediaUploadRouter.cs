@@ -44,11 +44,13 @@ namespace GodlessBoard.Services
             return new Media() {
                 UserDisplayName = oldFileName,
                 Name = relativePath.ToString(),
-                Type = MediaType.Image,
+                Type = MediaType.Image
             };
 
         }
 
+       
+        
         public bool CheckExistance(byte[] e, string ownerName, string oldFileName, string webRootPath)
         {
             var key = _configuration.GetSection("AppSettings:Key").Value;
