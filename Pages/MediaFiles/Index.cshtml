@@ -5,7 +5,7 @@
     @{
         foreach(var image in Model.Images)
         {
-            
+            <component type="typeof(ImageElement)" render-mode="ServerPrerendered" param-ImageId="image.Id"></component>
         }
     }
 </div>

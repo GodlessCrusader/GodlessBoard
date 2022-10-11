@@ -1,23 +1,29 @@
 ﻿@using GodlessBoard.Data
 @using GodlessBoard.Models
+@using GodlessBoard.Services
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Web
 @inject MyDbContext _dbContext
+@inject MediaUploadRouter _mediaUpload
 <div>
-    <h6>@Image.UserDisplayName</h6>
-    <img src="@Image.Name" height="200" width="200">
+    <h6>@Header</h6>
+    <img src="@imgUrl" height="200" width="200">
     <button @onclick="DeleteAsync" class="btn-secondary">Delete</button>
-    <button @onclick="RenameAsync" class="btn-secondary">Rename</button>
+    
     <hr>
 </div>
 @code {
     [Parameter]
-    public Media Image { get; set; }
-
+    public int ImageId { get; set; }
+    public string Header { get; set; }
+    public string imgUrl { get; set; }
     public async Task DeleteAsync()
     {
-
-        _dbContext.Media.Remove(Image);
+        var med = _dbContext.Media.Where(x => x.Id == ImageId).Single();
+        _dbContext.Media.Remove(med);
+        Header = med.UserDisplayName;
+        imgUrl = med.Name;
+        await _mediaUpload.DeleteAsync(med);
     }
 
     public async Task RenameAsync()

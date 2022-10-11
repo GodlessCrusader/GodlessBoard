@@ -11,9 +11,10 @@
 @inject HttpClient client
 
 <form>
-    <img src="@(imgUrl)" height="100" width="100">
+    <img class="@ImageClass" src="@(imgUrl)" height="100" width="100">
     <InputFile OnChange="UploadImageAsync" />
-    <button class="btn-primary rounded" @onclick="ChangeUserAvatarAsync">Change profile picture</button>
+    
+    <button class="@ButtonClass" disabled="@ImageSlotEmpty" @onclick="ChangeUserAvatarAsync">Change profile picture</button>
     <span class="text-dngr">@SpanText</span>
 </form>
 
@@ -22,7 +23,10 @@
     public User? CurrentUser { get; set; }
     [Parameter]
     public string imgUrl { get; set; }
+    public string ButtonClass { get; set; } = "btn-primary rounded disabled";
     public string SpanText { get; set; } = string.Empty;
+    public string ImageClass { get; set; } = "";
+    public bool ImageSlotEmpty { get; set; } = true;
     Media Avatar;
     IBrowserFile Image;
 
@@ -48,6 +52,7 @@
 
     private async Task DownloadImageAsync()
     {
+        imgUrl = "../image/fadingLines.gif";
         byte[] bytes;
         using (var ms = new MemoryStream())
         {
@@ -58,21 +63,17 @@
             istream.Dispose();
         }
         var imageExists = false;
-        if (_mediaUploadRouter.CheckExistance(bytes,
-            CurrentUser.UserName,
-            Image.Name,
-            _env.WebRootPath))
+        if (_mediaUploadRouter.CheckExistance(bytes, CurrentUser.UserName, Image.Name))
         {
             SpanText = "This image already exists in your library";
             imageExists = true;
         }
 
-        Avatar = _mediaUploadRouter.UploadMediaAsync(
-            bytes,
-            CurrentUser.UserName,
-            Image.Name,
-            _env.WebRootPath).Result;
-
+        Avatar = await _mediaUploadRouter.UploadMediaAsync(bytes, CurrentUser.UserName, Image.Name);
+        ButtonClass = ButtonClass.Replace("disable", string.Empty);
+        imgUrl = Avatar.Name;
+        ImageSlotEmpty = false;
+        
         if(!imageExists)
         {
             Avatar.Weight = Image.Size;
