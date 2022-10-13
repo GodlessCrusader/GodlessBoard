@@ -1,23 +1,9 @@
 ﻿@page
-<h3>Media files managment</h3>
-<div>
-    <h5>Images</h5>
-    @{
-        foreach(var image in Model.Images)
-        {
-            <component type="typeof(ImageElement)" render-mode="ServerPrerendered" param-ImageId="image.Id"></component>
-        }
-    }
-</div>
-<div>
-    <h5>Audios</h5>
-    @{
-        foreach(var audio in Model.Audios)
-        {
-            
-        }
-    }
-</div>
+
 @model GodlessBoard.Pages.MediaFiles.IndexModel
+
+<h3>Media files managment</h3>
+<component type="typeof(MediaList)" render-mode="ServerPrerendered" param-UserId="@Model.CurrentUser.Id">
+
 @{
 }

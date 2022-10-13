@@ -93,16 +93,20 @@
         {
             SpanText = "Wrong file type";
             return;
-        }else if( CurrentUser == null)
+        } 
+        
+        if( CurrentUser == null)
         {
             SpanText = "Authorization error. Please log in or sign up a new account";
             return;
-        }else if(CurrentUser.MaxMediaWeight - CurrentUser.CurrentMediaWeight < (ulong)e.File.Size)
+        }
+        
+        if(CurrentUser.MaxMediaWeight - CurrentUser.CurrentMediaWeight < (ulong)e.File.Size)
         {
             SpanText = "Media storage size limitation reached";
             return;
-        }else
-        {
+        }
+        
             try
             {
                 Image = e.File;
@@ -114,7 +118,7 @@
             //    SpanText = ex.ToString();
             }
             
-        }
+        
         
     }
 

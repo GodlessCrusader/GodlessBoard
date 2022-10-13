@@ -1,0 +1,128 @@
+﻿@using GodlessBoard.Data
+@using GodlessBoard.Models
+@using GodlessBoard.Services
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@inject MyDbContext _dbContext
+@inject MediaUploadRouter _mediaUpload
+
+<div>
+    <InputFile OnChange="AddMediaAsync" class="btn-secondary rounded">Add +</InputFile>
+    <span>@SpanText</span>
+    <hr>
+    <h5>Images</h5>
+    @{
+        if(Images.Count >= 1)
+            foreach (var image in Images)
+            {
+            <div>
+                <h6>@image.UserDisplayName</h6>
+                <img src="@image.Name" height="200" width="200">
+                <button @onclick="() => DeleteImageAsync(image)" class="btn-secondary">Delete</button>
+                <hr>
+            </div>
+
+            }
+        else
+        {
+            <label>No images available</label>
+        }
+            
+    }
+</div>
+<div>
+    <h5>Audios</h5>
+    @{
+        if(Audios.Count>=1)
+            foreach (var audio in Audios)
+            {
+
+            }
+            else
+            {
+                <label>No audios available</label>
+            }            
+    }
+</div>
+@code {
+    [Parameter]
+    public int UserId  { get; set; }
+    public List<Media> Images { get; set; }
+    public List<Media> Audios{ get; set; }
+    public string SpanText { get; set; } = string.Empty;
+    public User? CurrentUser { get; set; }
+
+
+    protected override Task OnInitializedAsync()
+    {
+        CurrentUser = _dbContext.Users.Where(x => x.Id == UserId).SingleOrDefault();
+        Images = _dbContext.Media.Where(x => x.OwnerId == UserId && x.Type == MediaType.Image).ToList();
+        Audios = _dbContext.Media.Where(x => x.OwnerId == UserId && x.Type == MediaType.Audio).ToList();
+        return Task.CompletedTask;
+    }
+
+    public async Task DeleteImageAsync(Media image)
+    {
+
+        _dbContext.Media.Remove(image);
+        _dbContext.SaveChanges();
+        await _mediaUpload.DeleteAsync(image);
+        Images.Remove(image);
+
+    }
+
+    public async Task DeleteAudioAsync(Media audio)
+    {
+
+    }
+
+    public async Task RenameMediaAsync(Media media, string newName)
+    {
+        media.UserDisplayName = newName;
+        _dbContext.SaveChanges();
+    }
+
+    public async Task AddMediaAsync(InputFileChangeEventArgs e)
+    {
+        if (!e.File.ContentType.Contains("image"))
+        {
+            SpanText = "Wrong file type";
+            return;
+        }
+
+        if (CurrentUser == null)
+        {
+            SpanText = "Authorization error. Please log in or sign up a new account";
+            return;
+        }
+
+        if (CurrentUser.MaxMediaWeight - CurrentUser.CurrentMediaWeight < (ulong)e.File.Size)
+        {
+            SpanText = "Media storage size limitation reached";
+            return;
+        }
+
+        byte[] bytes;
+
+        using MemoryStream ms = new MemoryStream();
+
+        await e.File.OpenReadStream().CopyToAsync(ms);
+
+        bytes = ms.ToArray();
+
+        var newMedia = await _mediaUpload.UploadMediaAsync(bytes, CurrentUser.UserName, e.File.Name);
+
+        if (_mediaUpload.CheckExistance(bytes, CurrentUser.UserName, e.File.Name))
+        {
+            SpanText = "Current media already exists in your library";
+            return;
+        }
+        newMedia.Weight = e.File.Size;
+        newMedia.OwnerId = CurrentUser.Id;
+        _dbContext.Users.Where(x => x.Id == CurrentUser.Id).Single().CurrentMediaWeight += (ulong)e.File.Size;
+        _dbContext.Media.Add(newMedia);
+        _dbContext.SaveChanges();
+        Images.Add(newMedia);
+        SpanText = "Media loading is complete";
+    }
+}
