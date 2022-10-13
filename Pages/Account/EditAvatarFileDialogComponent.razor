@@ -1,4 +1,5 @@
-﻿@using GodlessBoard.Data
+﻿
+@using GodlessBoard.Data
 @using GodlessBoard.Models
 @using GodlessBoard.Services
 @using Microsoft.AspNetCore.Components.Forms
@@ -25,7 +26,7 @@
     public string imgUrl { get; set; }
     public string ButtonClass { get; set; } = "btn-primary rounded disabled";
     public string SpanText { get; set; } = string.Empty;
-    public string ImageClass { get; set; } = "";
+    public string ImageClass { get; set; } = string.Empty;
     public bool ImageSlotEmpty { get; set; } = true;
     Media Avatar;
     IBrowserFile Image;
@@ -54,7 +55,7 @@
     {
         imgUrl = "../image/fadingLines.gif";
         byte[] bytes;
-        using (var ms = new MemoryStream())
+        using (var ms = new System.IO.MemoryStream())
         {
             var istream = Image.OpenReadStream();
             await istream.CopyToAsync(ms);
@@ -73,7 +74,7 @@
         ButtonClass = ButtonClass.Replace("disable", string.Empty);
         imgUrl = Avatar.Name;
         ImageSlotEmpty = false;
-        
+
         if(!imageExists)
         {
             Avatar.Weight = Image.Size;
@@ -82,17 +83,12 @@
             _context.Media.Add(Avatar);
             _context.SaveChanges();
         }
-        
 
-        
-        
-
-
-        
     }
 
     private async Task UploadImageAsync(InputFileChangeEventArgs e)
     {
+    
         if(!e.File.ContentType.Contains("image") || CurrentUser == null)
         {
             SpanText = "Wrong file type";
@@ -107,9 +103,17 @@
             return;
         }else
         {
-            Image = e.File;
-            await DownloadImageAsync();
-            imgUrl = Avatar.Name;
+            try
+            {
+                Image = e.File;
+                await DownloadImageAsync();
+                imgUrl = Avatar.Name;
+            }
+            catch 
+            {
+            //    SpanText = ex.ToString();
+            }
+            
         }
         
     }

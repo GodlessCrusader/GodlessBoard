@@ -23,17 +23,19 @@ namespace GodlessBoard.Services
             var key = _configuration.GetSection("AppSettings:Key").Value;
             string uploadPath;
             StringBuilder relativePath = new StringBuilder();
-            var userDirectories = ($"{GeneratePath(e, ownerName, key)}{Path.GetExtension(oldFileName)}").Split('\\');
-            
+            var userDirectories = GeneratePath(e, ownerName, key);
+
             relativePath.Append("../upload/userMedia/");
             relativePath.Append(userDirectories[0]);
             relativePath.Append('/');
             relativePath.Append(userDirectories[1]);
+            relativePath.Append(Path.GetExtension(oldFileName));
             
             uploadPath = Path.Combine(_env.WebRootPath,
                 "upload",
                 "userMedia",
-                $"{GeneratePath(e, ownerName, key)}{Path.GetExtension(oldFileName)}");
+                userDirectories[0],
+                $"{userDirectories[1]}{Path.GetExtension(oldFileName)}");
             _logger.LogInformation($"upload path from MediaUploadRouter: {uploadPath}");
             if (!Directory.Exists(uploadPath.Replace(userDirectories[1], string.Empty)))
                 Directory.CreateDirectory(uploadPath.Replace(userDirectories[1], string.Empty));
@@ -79,18 +81,19 @@ namespace GodlessBoard.Services
         }
 
        
-        private static string GeneratePath(byte[] mediaBytes, string ownerName, string key)
+        private static List<string> GeneratePath(byte[] mediaBytes, string ownerName, string key)
         {
             if (mediaBytes == null || ownerName == null)
                 throw new NullReferenceException();
             else
             {
-                string uploadPath;
+                List<string> uploadPath = new();
                 using (var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(key)))
                 {
                     var ownerNameHash = (hmac.ComputeHash(Encoding.UTF8.GetBytes(ownerName))).ToHex(false);
                     var mediaNameHash = (hmac.ComputeHash(mediaBytes)).ToHex(false);
-                    uploadPath = Path.Combine(ownerNameHash, mediaNameHash); 
+                    uploadPath.Add(ownerNameHash);
+                    uploadPath.Add(mediaNameHash);
                 }
                 
                 return uploadPath;
