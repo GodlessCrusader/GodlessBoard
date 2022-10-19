@@ -20,7 +20,7 @@ namespace GodlessBoard.Controllers
 
         public string Sync(int id)
         {
-            var result = "sas";
+            var result = "";
             if (HttpContext.User.Identity != null && HttpContext.User.Identity.Name != null && HttpContext.User.Identity.IsAuthenticated)
             {
 
@@ -31,7 +31,6 @@ namespace GodlessBoard.Controllers
                 if (user != null && allowedUsers.Contains(user.Id))
                 {
                     result = _dbContext.Games.Where(x => x.Id == id).Single().JsonRepresentation;
-
                 }
                 else
                     result = "user isn't allowed";
