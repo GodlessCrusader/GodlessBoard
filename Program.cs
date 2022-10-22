@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
@@ -21,7 +23,11 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();
 builder.Services.AddAuthentication("GodlessCookie").AddCookie("GodlessCookie", options =>
-options.Cookie.Name = "GodlessCookie"
+{ 
+    options.Cookie.Name = "GodlessCookie";
+    options.Cookie.
+} 
+
 ); 
 var connectionString = builder.Configuration.GetConnectionString("MyDbContextConnection"); ;
 
@@ -34,7 +40,7 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseHttpsRedirection();
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    
     app.UseHsts();
 }
 app.UseForwardedHeaders(new ForwardedHeadersOptions
