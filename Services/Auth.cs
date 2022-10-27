@@ -1,30 +1,32 @@
 ﻿using GodlessBoard.Models;
 using GodlessBoard.Pages.Account;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Security.Claims;
 
 namespace GodlessBoard.Services
 {
     public class Auth
     {
-        public static async Task Identify(HttpContext httpContext, string userName, string displayName)
+        private readonly JwtHandler _jwtHandler;
+        public Auth(JwtHandler jwtHandler)
         {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, $"{userName.ToUpper()}|{displayName}")
-            };
-            var identity = new ClaimsIdentity(claims, "GodlessCookie");
-            ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(identity);
-            await httpContext.SignInAsync("GodlessCookie", claimsPrincipal);
+            _jwtHandler = jwtHandler;
+        }
+        public async Task IdentifyAsync(HttpContext httpContext, User user)
+        {
+            httpContext.Response.Cookies.Append("gboard_signin_token", _jwtHandler.GenetarateToken(user));
+            
+            
         }
 
-        public static void ParseIdentityName(string userIdentity, out string Email, out string DisplayName)
+        public void ParseIdentityName(string userIdentity, out string Email, out string DisplayName)
         {
             var words = userIdentity.Split('|');
             Email = words[0];
             DisplayName = words[1];
         }
-        public static string GetUserName(string userIdentity)
+        public string GetUserName(string userIdentity)
         {
             return userIdentity.Split('|')[0];
         }

@@ -10,10 +10,12 @@ namespace GodlessBoard.Controllers
     [Route("[controller]")]
     public class UserController : Controller
     {
+        private readonly Auth _auth;
         private readonly MyDbContext _context;
-        public UserController(MyDbContext context)
+        public UserController(MyDbContext context, Auth auth)
         {
             _context = context;
+            _auth = auth;
         }
 
         [HttpGet]
@@ -34,7 +36,7 @@ namespace GodlessBoard.Controllers
 
                     await file.CopyToAsync(fs);
 
-                    var userName = Auth.GetUserName(User.Identity.Name);
+                    var userName = _auth.GetUserName(User.Identity.Name);
                     var user = (from u in _context.Users
                                 where u.UserName == userName
                                 select u).SingleOrDefault();

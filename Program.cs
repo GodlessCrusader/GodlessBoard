@@ -1,12 +1,13 @@
 using GodlessBoard.Data;
 using GodlessBoard.Pages.Account;
 using GodlessBoard.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Net;
-
-
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,8 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
     options.KnownProxies.Add(IPAddress.Parse("10.0.0.100"));
 });
 // Add services to the container.
+builder.Services.AddScoped<Auth>();
+builder.Services.AddScoped<JwtHandler>();
 builder.Services.AddSingleton<MediaUploadRouter>();
 builder.Services.AddSingleton<HashGenerator>();
 builder.Services.AddRazorPages();
@@ -22,10 +25,18 @@ builder.Services.AddControllers();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();
-builder.Services.AddAuthentication("GodlessCookie").AddCookie("GodlessCookie", options =>
-{ 
-    options.Cookie.Name = "GodlessCookie";
-    options.Cookie.
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+    };
+    
+   
 } 
 
 ); 

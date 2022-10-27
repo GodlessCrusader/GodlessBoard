@@ -14,11 +14,13 @@ namespace GodlessBoard.Pages.Account
         public Credential Credential { get; set; }
         private readonly IConfiguration _configuration;
         private readonly HashGenerator _hashGenerator;
-        public LoginModel(MyDbContext context,IConfiguration configuration, HashGenerator hashGenerator)
+        private readonly Auth _auth;
+        public LoginModel(MyDbContext context,IConfiguration configuration, HashGenerator hashGenerator, Auth auth)
         {
             _context = context;
-            _configuration=configuration;
-            _hashGenerator=hashGenerator;
+            _configuration = configuration;
+            _hashGenerator = hashGenerator;
+            _auth = auth;
         }
 
         public void OnGet()
@@ -44,7 +46,7 @@ namespace GodlessBoard.Pages.Account
             }
             else
             {
-                await Auth.Identify(HttpContext, Credential.UserName, user.First().DisplayName);
+                await _auth.IdentifyAsync(HttpContext, user.First());
                 return RedirectToPage("/Index");
             }
 

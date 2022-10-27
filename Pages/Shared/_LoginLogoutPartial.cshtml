@@ -1,7 +1,7 @@
 ﻿@using GodlessBoard.Services;
 @{
 
-    string userName, displayName;
+    string  displayName;
     
     if(!User.Identity.IsAuthenticated)
     {
@@ -10,7 +10,7 @@
     }
     else
     {
-        Auth.ParseIdentityName(User.Identity.Name, out userName, out displayName);
+        displayName = Context.User.Identity.Name;
     <label>Hello, @displayName</label>
     <div style="width:30%;" class="bg-info rounded-circle">
             
