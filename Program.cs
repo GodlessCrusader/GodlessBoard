@@ -25,21 +25,9 @@ builder.Services.AddControllers();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = false,
-        ValidateAudience = false,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-    };
-    
-   
-} 
+builder.Services.AddAuthentication(AuthHandler.PolicyName)
+    .AddScheme<AuthOptions, AuthHandler>(AuthHandler.PolicyName, null, null);
 
-); 
 var connectionString = builder.Configuration.GetConnectionString("MyDbContextConnection"); ;
 
 builder.Services.AddDbContext<MyDbContext>(options =>

@@ -21,6 +21,37 @@ namespace GodlessBoard.Services
             _configuration = configuration;
         }
 
+        public IEnumerable<Claim>? GetClaims(string token)
+        {
+            if (string.IsNullOrEmpty(token) || !ValidateToken(token))
+                return null;
+            var jwt = new JwtSecurityToken(token);
+            return jwt.Claims;
+        }
+
+
+        public bool ValidateToken(string token)
+        {
+            var validationParams = new TokenValidationParameters()
+            {
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])),
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true
+            };
+            SecurityToken? secToken = null;
+            var tokenHandler = new JwtSecurityTokenHandler();
+            try
+            {
+                tokenHandler.ValidateToken(token, validationParams, out secToken);
+            }
+            catch
+            {
+                return false;
+            }
+         
+                
+            return true;
+        }
         public string GenetarateToken(User user)
         {
             var result = string.Empty;
@@ -31,8 +62,7 @@ namespace GodlessBoard.Services
                 new Claim(ClaimTypes.Name, user.DisplayName)
             };
             
-            //var identity = new ClaimsIdentity(claims, JwtBearerDefaults.AuthenticationScheme);
-            //ClaimsPrincipal claimsPrincipal = new(identity);
+            
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
@@ -49,23 +79,8 @@ namespace GodlessBoard.Services
 
         public User? GetUserByToken(string token)
         {
-            var validationParams = new TokenValidationParameters()
-            {
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])),
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true
-            };
-            SecurityToken? secToken = null;
-            var tokenHandler = new JwtSecurityTokenHandler();
-            try
-            {
-                tokenHandler.ValidateToken(token, validationParams, out secToken);
-            }
-            catch
-            {
 
-            }
-            if (secToken == null)
+            if (!ValidateToken(token))
                 return null;
             var jwt = new JwtSecurityToken(token);
             var userLogin = jwt.Claims.First(x => x.Type == ClaimTypes.Name).Value;
