@@ -47,7 +47,7 @@ namespace GodlessBoard.Pages.Account
                 };
                 _context.Users.Add(newUser);
                 _context.SaveChanges();
-                await _auth.IdentifyAsync(HttpContext, newUser);
+                await _auth.SignInAsync(HttpContext, newUser);
             }
             else
             {

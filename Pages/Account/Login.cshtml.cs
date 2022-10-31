@@ -11,7 +11,7 @@ namespace GodlessBoard.Pages.Account
         private readonly GodlessBoard.Data.MyDbContext _context;
 
         [BindProperty]
-        public Credential Credential { get; set; }
+        public Credential Credential { get; set; } = new();
         private readonly IConfiguration _configuration;
         private readonly HashGenerator _hashGenerator;
         private readonly Auth _auth;
@@ -33,22 +33,15 @@ namespace GodlessBoard.Pages.Account
             var user = from users in _context.Users
                        where users.UserName == Credential.UserName.ToUpper()
                        select users;
-            if (user == null || user.Count() < 1)
+               
+            if (user == null || user.Count() < 1 || !_hashGenerator.VerifyUserData(user.First(), Credential))
             {
                 ModelState.AddModelError(string.Empty, "There is no such Email-Password combination.");
                 return Page();
             }
-                
-            if (!_hashGenerator.VerifyUserData(user.First(), Credential))
-            {
-                ModelState.AddModelError(string.Empty, "There is no such Email-Password combination.");
-                return Page();
-            }
-            else
-            {
-                await _auth.IdentifyAsync(HttpContext, user.First());
-                return RedirectToPage("/Index");
-            }
+            
+            await _auth.SignInAsync(HttpContext, user.First());
+            return RedirectToPage("/Index");
 
         }
     }
@@ -57,9 +50,9 @@ namespace GodlessBoard.Pages.Account
     {
         [Required]
         [Display(Name = "Login")]
-        public string UserName { get; set; }
+        public string UserName { get; set; } = string.Empty;
         [Required]
         [DataType(DataType.Password)]
-        public string Password { get; set; }
+        public string Password { get; set; } = string.Empty;
     }
 }

@@ -13,13 +13,18 @@ namespace GodlessBoard.Services
         {
             _jwtHandler = jwtHandler;
         }
-        public async Task IdentifyAsync(HttpContext httpContext, User user)
+        public Task SignInAsync(HttpContext httpContext, User user)
         {
             httpContext.Response.Cookies.Append("gboard_signin_token", _jwtHandler.GenetarateToken(user));
-            
-            
+            return Task.CompletedTask;
         }
-
+        public Task SignOutAsync(HttpContext httpContext)
+        {
+            if (!httpContext.Request.Cookies.Any(x => x.Key == "gboard_signin_token"))
+                return Task.CompletedTask;
+            httpContext.Response.Cookies.Delete("gboard_signin_token");
+            return Task.CompletedTask;
+        }
         public void ParseIdentityName(string userIdentity, out string Email, out string DisplayName)
         {
             var words = userIdentity.Split('|');

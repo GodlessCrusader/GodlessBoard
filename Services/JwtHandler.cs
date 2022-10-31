@@ -34,6 +34,8 @@ namespace GodlessBoard.Services
         {
             var validationParams = new TokenValidationParameters()
             {
+                ValidateAudience = false,
+                ValidateIssuer = false,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])),
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true
@@ -44,8 +46,9 @@ namespace GodlessBoard.Services
             {
                 tokenHandler.ValidateToken(token, validationParams, out secToken);
             }
-            catch
+            catch(Exception e)
             {
+                Console.WriteLine(e.ToString());
                 return false;
             }
          
