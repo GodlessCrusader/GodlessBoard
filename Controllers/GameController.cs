@@ -3,6 +3,7 @@ using GodlessBoard.Services;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using System.Security.Claims;
 
 namespace GodlessBoard.Controllers
 {
@@ -23,25 +24,19 @@ namespace GodlessBoard.Controllers
      
         public string Sync(int id)
         {
+            if(HttpContext.Request.Cookies.Any(x => x.Key == "gboard_signin_token"))
+                return string.Empty;
             var result = "";
             var cookie = HttpContext.Request.Cookies.First(x => x.Key == "gboard_signin_token");
-            
-            if (HttpContext.User.Identity != null && HttpContext.User.Identity.Name != null && HttpContext.User.Identity.IsAuthenticated)
+            if(!_jwtHandler.ValidateToken(cookie.Value))
+                return string.Empty;
+            var claims = _jwtHandler.GetClaims(cookie.Value);
+            var user = _dbContext.Users.First(x => x.UserName == claims.First(x => x.ValueType == ClaimValueTypes.Email).Value);
+            if(user != null && _dbContext.UserGameRole.Any(x => x.UserId == user.Id && x.GameId == id))
             {
-
-                var user = _dbContext.Users.Single(x => x.UserName == _auth.GetUserName(HttpContext.User.Identity.Name));
-                var allowedUsers = (from users in _dbContext.UserGameRole
-                                    where users.GameId == id
-                                    select users.UserId);
-                if (user != null && allowedUsers.Contains(user.Id))
-                {
-                    result = _dbContext.Games.Where(x => x.Id == id).Single().JsonRepresentation;
-                }
-                else
-                    result = "user isn't allowed";
+                var game = _dbContext.Games.First(x => x.Id == id);
+                result = game.JsonRepresentation;
             }
-            else
-                result = "Authentification problem"; 
             return result;
             //var authCookie = httpContext.Request.Headers.Cookie.SingleOrDefault();
             
