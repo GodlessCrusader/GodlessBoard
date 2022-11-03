@@ -3,6 +3,7 @@ using GodlessBoard.Services;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Security.Claims;
 
 namespace GodlessBoard.Controllers
@@ -24,14 +25,19 @@ namespace GodlessBoard.Controllers
      
         public string Sync(int id)
         {
-            if(HttpContext.Request.Cookies.Any(x => x.Key == "gboard_signin_token"))
+            
+            
+            if(!Request.Headers.Any(x => x.Key == "gboard_signin_token"))
                 return string.Empty;
+            var token = Request.Headers.First(x => x.Key == "gboard_signin_token").Value;
+            
             var result = "";
-            var cookie = HttpContext.Request.Cookies.First(x => x.Key == "gboard_signin_token");
-            if(!_jwtHandler.ValidateToken(cookie.Value))
+            
+            if(!_jwtHandler.ValidateToken(token))
                 return string.Empty;
-            var claims = _jwtHandler.GetClaims(cookie.Value);
-            var user = _dbContext.Users.First(x => x.UserName == claims.First(x => x.ValueType == ClaimValueTypes.Email).Value);
+            var claims = _jwtHandler.GetClaims(token);
+            var userName = claims.First(x => x.Type == ClaimValueTypes.Email).Value;
+            var user = _dbContext.Users.First(x => x.UserName == userName);
             if(user != null && _dbContext.UserGameRole.Any(x => x.UserId == user.Id && x.GameId == id))
             {
                 var game = _dbContext.Games.First(x => x.Id == id);
