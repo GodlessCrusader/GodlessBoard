@@ -3,6 +3,7 @@ using GodlessBoard.Models;
 using GodlessBoard.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Security.Claims;
 
 namespace GodlessBoard.Pages.Account
 {
@@ -20,8 +21,7 @@ namespace GodlessBoard.Pages.Account
         {
             if (User.Identity.IsAuthenticated)
             {
-                string userName, displayName;
-                _auth.ParseIdentityName(User.Identity.Name, out userName, out displayName);
+                string userName = User.Claims.First(x => x.Type == ClaimTypes.Email).Value;
                 CurrentUser = (from user in _context.Users
                                where user.UserName == userName
                                select user).SingleOrDefault();

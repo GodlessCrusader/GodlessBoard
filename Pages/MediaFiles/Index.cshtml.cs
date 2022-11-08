@@ -4,6 +4,7 @@ using GodlessBoard.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace GodlessBoard.Pages.MediaFiles
 {
@@ -29,7 +30,8 @@ namespace GodlessBoard.Pages.MediaFiles
         {
             if(HttpContext.User.Identity.IsAuthenticated)
             {
-                CurrentUser = _context.Users.Where(x => x.UserName == _auth.GetUserName(User.Identity.Name)).Single();
+                var userName = User.Claims.First(x => x.Type == ClaimTypes.Email).Value;
+                CurrentUser = _context.Users.First(x => x.UserName == userName);
                 Images = _context.Media.Where(x => x.OwnerId == CurrentUser.Id && x.Type == MediaType.Image).ToList();
                 Audios = _context.Media.Where(x => x.OwnerId == CurrentUser.Id && x.Type == MediaType.Audio).ToList();
             }

@@ -21,8 +21,7 @@ namespace GodlessBoard.Pages.Account
         {
             if(User.Identity.IsAuthenticated)
             {
-                string userName, displayName;
-                _auth.ParseIdentityName(User.Identity.Name, out userName, out displayName);
+                var userName = User.Claims.First(x => x.Type == ClaimTypes.Email).Value;
                 CurrentUser = (from currentUser in _context.Users
                               where currentUser.UserName == userName
                               select currentUser).SingleOrDefault();

@@ -25,12 +25,7 @@ namespace GodlessBoard.Services
             httpContext.Response.Cookies.Delete("gboard_signin_token");
             return Task.CompletedTask;
         }
-        public void ParseIdentityName(string userIdentity, out string Email, out string DisplayName)
-        {
-            var words = userIdentity.Split('|');
-            Email = words[0];
-            DisplayName = words[1];
-        }
+        
         public string GetUserName(string userIdentity)
         {
             return userIdentity.Split('|')[0];

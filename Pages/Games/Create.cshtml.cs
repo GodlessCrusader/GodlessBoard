@@ -4,6 +4,7 @@ using GodlessBoard.Models;
 using GodlessBoard.Services;
 using System.ComponentModel.DataAnnotations;
 using GameModel;
+using System.Security.Claims;
 
 namespace GodlessBoard.Pages.Games
 {
@@ -29,7 +30,8 @@ namespace GodlessBoard.Pages.Games
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
-            var owner = _context.Users.Where(u => u.UserName == _auth.GetUserName( User.Identity.Name)).Single();
+            var userName = User.Claims.First(x => x.Type == ClaimTypes.Email).Value;
+            var owner = _context.Users.Where(u => u.UserName == userName).Single();
             var game = new GodlessBoard.Models.Game();
             game.Players = new List<User>();
             game.Players.Add(owner);
