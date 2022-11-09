@@ -10,14 +10,14 @@ namespace GodlessBoard.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class MediaUploadController : ControllerBase
+    public class MediaController : ControllerBase
     {
         private readonly MyDbContext _dbContext;
 
         private readonly JwtHandler _jwtHandler;
 
         private readonly MediaUploadRouter _mediaUploadRouter;
-        public MediaUploadController(MyDbContext context, JwtHandler jwtHandler, MediaUploadRouter mediaUploadRouter)
+        public MediaController(MyDbContext context, JwtHandler jwtHandler, MediaUploadRouter mediaUploadRouter)
         {
             _dbContext = context;
             _jwtHandler = jwtHandler;
