@@ -3,6 +3,9 @@ using GodlessBoard.Models;
 using GodlessBoard.Services;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Mime;
+using System.Security.Claims;
+
 namespace GodlessBoard.Controllers
 {
     [ApiController]
@@ -29,7 +32,7 @@ namespace GodlessBoard.Controllers
         }
 
         [HttpPost]
-        public IActionResult UploadImage(object image)
+        public async Task<IActionResult> UploadImage(IFormFile file)
         {
             if (!Request.Headers.Any(x => x.Key == "gboard_signin_token"))
                 return Unauthorized();
@@ -39,8 +42,17 @@ namespace GodlessBoard.Controllers
             if (!_jwtHandler.ValidateToken(token.Value))
                 return Unauthorized();
 
-            _mediaUploadRouter.
+            var userName = _jwtHandler.GetClaims(token.Value).First(x => x.Type == ClaimTypes.Email).Value;
 
+            using MemoryStream ms = new();
+
+            file.CopyTo(ms);
+
+            if (_mediaUploadRouter.CheckExistance(ms.ToArray(), userName, file.FileName))
+                return Ok();
+
+            await _mediaUploadRouter.UploadMediaAsync(ms.ToArray(), userName, file.FileName);
+            
             return Ok();
         }
         

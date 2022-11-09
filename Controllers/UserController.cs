@@ -3,6 +3,7 @@ using GodlessBoard.Models;
 using GodlessBoard.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace GodlessBoard.Controllers
 {
@@ -36,7 +37,7 @@ namespace GodlessBoard.Controllers
 
                     await file.CopyToAsync(fs);
 
-                    var userName = _auth.GetUserName(User.Identity.Name);
+                    var userName = User.Claims.First(x => x.Type == ClaimTypes.Email).Value;
                     var user = (from u in _context.Users
                                 where u.UserName == userName
                                 select u).SingleOrDefault();
