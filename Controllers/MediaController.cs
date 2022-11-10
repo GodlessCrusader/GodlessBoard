@@ -32,7 +32,7 @@ namespace GodlessBoard.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UploadImage(IFormFile file)
+        public async Task<IActionResult> UploadImage(byte [] file)
         {
             if (!Request.Headers.Any(x => x.Key == "gboard_signin_token"))
                 return Unauthorized();
@@ -44,15 +44,23 @@ namespace GodlessBoard.Controllers
 
             var userName = _jwtHandler.GetClaims(token.Value).First(x => x.Type == ClaimTypes.Email).Value;
 
-            using MemoryStream ms = new();
 
-            file.CopyTo(ms);
-
-            if (_mediaUploadRouter.CheckExistance(ms.ToArray(), userName, file.FileName))
+            if (_mediaUploadRouter.CheckExistance(file, userName, file.FileName))
                 return Ok();
-
-            await _mediaUploadRouter.UploadMediaAsync(ms.ToArray(), userName, file.FileName);
+            var user = _dbContext.Users.First(x => x.UserName == userName);
             
+            var media = await _mediaUploadRouter.UploadMediaAsync(ms.ToArray(), userName, file.FileName);
+            media.Owner = user;
+            media.OwnerId = user.Id;
+            media.Weight = file.
+            _dbContext.Media.Add(new Media() {
+                Owner = user,
+                OwnerId = user.Id,
+                Weight = 
+
+            });
+
+
             return Ok();
         }
         
