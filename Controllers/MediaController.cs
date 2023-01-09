@@ -80,8 +80,9 @@ namespace GodlessBoard.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Upload(byte [] bytes, string json)
+        public async Task<IActionResult> Upload([FromBody]byte [] bytes, string json)
         {
+
             var user = await AuthorizeRequestAsync();
 
             if (user == null)
