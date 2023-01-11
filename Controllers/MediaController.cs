@@ -10,9 +10,8 @@ using System.Security.Claims;
 
 namespace GodlessBoard.Controllers
 {
-    [ApiController]
-    [Route("[controller]/[action]/{id}")]
-    public class MediaController : ControllerBase
+   
+    public class MediaController : Controller
     {
         private readonly MyDbContext _dbContext;
 
@@ -45,15 +44,13 @@ namespace GodlessBoard.Controllers
             return await _dbContext.Users.FirstAsync(x => x.UserName == userName);
         }
 
-        [HttpGet]
-        public IActionResult Index()
+        
+        public string Sasat()
         {
-
-            return RedirectToPage("/Account/Index");
-
+            return "sasat";
         }
 
-        [HttpGet]
+        
         public async Task<IActionResult> Remove(long id)
         {
             var user = await AuthorizeRequestAsync();
@@ -80,7 +77,7 @@ namespace GodlessBoard.Controllers
             return Ok();
         }
 
-        [HttpPost]
+        
         public async Task<IActionResult> Upload(long id)
         {
             
