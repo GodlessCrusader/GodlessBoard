@@ -58,8 +58,9 @@ namespace GodlessBoard.Pages.Account
             return RedirectToPage("/Account/Index");
         }
 
-        public RegisterModel(MyDbContext context, HashGenerator hashGenerator)
+        public RegisterModel(MyDbContext context, HashGenerator hashGenerator, Auth auth)
         {
+            _auth = auth;
             _context = context;
             _hashGenerator = hashGenerator;
         }

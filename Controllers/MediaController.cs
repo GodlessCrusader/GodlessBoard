@@ -48,6 +48,7 @@ namespace GodlessBoard.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+
             return RedirectToPage("/Account/Index");
 
         }
@@ -80,26 +81,32 @@ namespace GodlessBoard.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Upload([FromBody]byte [] bytes, string json)
+        public async Task<IActionResult> Upload(long id)
         {
-
+            
             var user = await AuthorizeRequestAsync();
 
             if (user == null)
                 return Unauthorized();
+            using MemoryStream ms = new(); 
+            foreach (var file in Request.Form.Files)
+            {
+                await file.CopyToAsync(ms);
+                if (! (_mediaUploadRouter.CheckExistance(ms.ToArray(), user.UserName, file.Name)))
+                {
+                    var media = await _mediaUploadRouter.UploadMediaAsync(ms.ToArray(),
+                        user.UserName,
+                        file.Name);
+                    media.Owner = user;
+                    media.OwnerId = user.Id;
+                    media.Weight = file.Length;
+                    _dbContext.Media.Add(media);
+                    await _dbContext.SaveChangesAsync();
+                }  
+                    
 
-           var file = Newtonsoft.Json.JsonConvert.DeserializeObject<MediaFile>(json);
-
-            if (_mediaUploadRouter.CheckExistance(bytes, user.UserName, file.UserDisplayName))
-                return Ok();
-            
-            var media = await _mediaUploadRouter.UploadMediaAsync(bytes, user.UserName, file.UserDisplayName);
-            media.Owner = user;
-            media.OwnerId = user.Id;
-            media.Weight = file.Size;
-            _dbContext.Media.Add(media);
-            await _dbContext.SaveChangesAsync();
-            
+            }
+            //var file = Newtonsoft.Json.JsonConvert.DeserializeObject<MediaFile>(json);
             return Ok();
         }
 
