@@ -1,3 +1,4 @@
+using GameModel;
 using GodlessBoard.Data;
 using GodlessBoard.Models;
 using GodlessBoard.Services;

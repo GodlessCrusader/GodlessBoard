@@ -1,4 +1,5 @@
-﻿using GodlessBoard.Data;
+﻿using GameModel;
+using GodlessBoard.Data;
 using GodlessBoard.Models;
 using GodlessBoard.Services;
 using Microsoft.AspNetCore.Http;
@@ -44,7 +45,7 @@ namespace GodlessBoard.Controllers
                     var media = new Media()
                     {
                         Name = file.Name,
-                        Type = Models.MediaType.Image,
+                        Type = MediaType.Image,
                         Weight = file.Length,
                         Owner = user
                     };

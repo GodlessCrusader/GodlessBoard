@@ -1,4 +1,5 @@
 ﻿using Blazor.Extensions.Canvas.WebGL;
+using GameModel;
 using GodlessBoard.Models;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Security.Cryptography;

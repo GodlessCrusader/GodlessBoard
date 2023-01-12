@@ -50,6 +50,31 @@ namespace GodlessBoard.Controllers
             return "sasat";
         }
 
+        public async Task<ActionResult<IQueryable<MediaFile>>> MediaList()
+        {
+            var user = await AuthorizeRequestAsync();
+            if (user == null)
+                return Unauthorized();
+
+            var mediaList = from list in _dbContext.Media
+                            where list.OwnerId == user.Id
+                            select list;
+
+            var mediaFileList = new List<MediaFile>();
+
+            foreach(var media in mediaList)
+            {
+                mediaFileList.Add(new MediaFile() {
+                    Id = media.Id,
+                    Uri = media.Name,
+                    UserDisplayName = media.UserDisplayName,
+                    Type = media.Type,
+                    Size = media.Weight
+
+                });
+            }
+            return Ok(mediaFileList);
+        }
         
         public async Task<IActionResult> Remove(long id)
         {
@@ -78,7 +103,7 @@ namespace GodlessBoard.Controllers
         }
 
         
-        public async Task<IActionResult> Upload(long id)
+        public async Task<IActionResult> Upload()
         {
             
             var user = await AuthorizeRequestAsync();
@@ -89,11 +114,11 @@ namespace GodlessBoard.Controllers
             foreach (var file in Request.Form.Files)
             {
                 await file.CopyToAsync(ms);
-                if (! (_mediaUploadRouter.CheckExistance(ms.ToArray(), user.UserName, file.Name)))
+                if (! (_mediaUploadRouter.CheckExistance(ms.ToArray(), user.UserName, file.FileName)))
                 {
                     var media = await _mediaUploadRouter.UploadMediaAsync(ms.ToArray(),
                         user.UserName,
-                        file.Name);
+                        file.FileName);
                     media.Owner = user;
                     media.OwnerId = user.Id;
                     media.Weight = file.Length;
