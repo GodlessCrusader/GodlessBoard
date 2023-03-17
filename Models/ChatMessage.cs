@@ -8,6 +8,7 @@ namespace GodlessBoard.Models
         public User User { get; set; }
         public int UserId { get; set; }
         public Game Game { get; set; }
+        public int GameId { get; set; }
         public DateTime RecievingTime { get; set; }
         public string Text { get; set; }
     }
