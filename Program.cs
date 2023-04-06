@@ -1,4 +1,5 @@
 using GodlessBoard.Data;
+using GodlessBoard.Hubs;
 using GodlessBoard.Pages.Account;
 using GodlessBoard.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -16,6 +17,7 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
     options.KnownProxies.Add(IPAddress.Parse("10.0.0.100"));
 });
 // Add services to the container.
+builder.Services.AddSignalR();
 builder.Services.AddScoped<Auth>();
 builder.Services.AddScoped<JwtHandler>();
 builder.Services.AddSingleton<MediaUploadRouter>();
@@ -55,6 +57,7 @@ app.UseAuthentication();
 app.MapRazorPages();
 app.MapBlazorHub();
 
+
 app.UseBlazorFrameworkFiles();
 
 var corsSection = app.Configuration.GetSection("CORS");
@@ -75,7 +78,7 @@ app.UseCors(policy =>
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapDefaultControllerRoute();
-    
+    endpoints.MapHub<GameHub>("/gamehub");
 });
 
 
