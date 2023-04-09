@@ -48,7 +48,7 @@ namespace GodlessBoard.Pages.Games
             game.Bio = Game.Bio;
             game.JsonRepresentation = Newtonsoft.Json.JsonConvert.SerializeObject(
                 new GameModel.Game(game.Name,
-                    new GameModel.Player(owner.DisplayName, Role.Owner)));
+                    new Player(owner.DisplayName, owner.UserName, Role.Owner)));
             
             _context.Games.Add(game);
             

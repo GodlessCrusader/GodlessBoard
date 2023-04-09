@@ -12,6 +12,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameModel", "..\GameModel\G
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientSideBoard", "..\ClientSideBoard\ClientSideBoard.csproj", "{9D75CCBB-38B8-42C6-A216-867A045D361D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiceEngine", "..\DiceEngine\DiceEngine.csproj", "{475ED203-AD1B-4951-8D4D-49A318EE1675}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,6 +32,10 @@ Global
 		{9D75CCBB-38B8-42C6-A216-867A045D361D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D75CCBB-38B8-42C6-A216-867A045D361D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D75CCBB-38B8-42C6-A216-867A045D361D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{475ED203-AD1B-4951-8D4D-49A318EE1675}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{475ED203-AD1B-4951-8D4D-49A318EE1675}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{475ED203-AD1B-4951-8D4D-49A318EE1675}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{475ED203-AD1B-4951-8D4D-49A318EE1675}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
