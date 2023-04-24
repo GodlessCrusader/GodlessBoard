@@ -50,7 +50,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DiceEngine\DiceEngine.csproj" />
     <ProjectReference Include="..\GameModel\GameModel.csproj" />
   </ItemGroup>
 
