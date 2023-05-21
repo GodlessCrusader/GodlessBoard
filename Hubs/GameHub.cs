@@ -19,7 +19,7 @@ namespace GodlessBoard.Hubs
             await Clients.Group($"game{gameId}").SendAsync(username, message);
         }
 
-        public async Task UpdateBoardAsync(int gameId)
+        public async Task UpdateBoardAsync(int gameId) 
         {
             if (Context.User == null || Context.User.Identity == null || !Context.User.Identity.IsAuthenticated)
                 return;
