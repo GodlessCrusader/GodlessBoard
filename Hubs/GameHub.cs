@@ -14,16 +14,16 @@ namespace GodlessBoard.Hubs
         
         public async Task SendMessageAsync(int gameId, string username, string message)
         {
-            if (Context.User == null || !Context.User.Identity.IsAuthenticated)
+            if (Context.User == null || Context.User.Identity == null || !Context.User.Identity.IsAuthenticated)
                 return;
             await Clients.Group($"game{gameId}").SendAsync(username, message);
         }
 
         public async Task UpdateBoardAsync(int gameId)
         {
-            if (Context.User == null || !Context.User.Identity.IsAuthenticated)
+            if (Context.User == null || Context.User.Identity == null || !Context.User.Identity.IsAuthenticated)
                 return;
-            Context.
+            //Context.Items[Context.Items.Count - 1] = gameId;
             if (!Context.User.Claims.Any(x => x.Type == ClaimTypes.Email))
                 return;
             var username = Context
