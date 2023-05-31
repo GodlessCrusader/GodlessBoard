@@ -59,18 +59,29 @@ namespace GodlessBoard.Hubs
                     var chat = new Chat();
                     chat.Messages = new List<TextMessage>();
                     var messages = _dbContext.Messages.Where(x => x.GameId == game.Id).ToList();
+
+                    Dictionary<int, string> userAvatars = new();
+                    
+
                     var userIds = from m in _dbContext.UserGameRole
                                   where m.GameId == game.Id
                                   select m.Id;
-                    var userAvatarStrings = from m in _dbContext.Users
-                                            where userIds.Contains(m.Id)
-                                            select m.ProfilePicUrl;
-                                            
-                    foreach(var m in messages)
+
+                    foreach(var id in userIds)
                     {
-                        
-                        chat.Messages.Append(new TextMessage() {Text = m.Text, Id = m.Id, RecievingTime = m.RecievingTime, UserAvatarUrl =  });
+                        userAvatars.Add(id, (from m in _dbContext.Users
+                                            where m.Id == id
+                                            select m.ProfilePicUrl).Single());
                     }
+                                        
+                    foreach(var m in messages)
+                    {                        
+                        chat.Messages.Append(new TextMessage() {Text = m.Text,
+                            Id = m.Id,
+                            RecievingTime = m.RecievingTime,
+                            UserAvatarUrl = userAvatars[m.UserId]});
+                    }
+
                     await UpdateChatAsync(chat, currentUser, gameId);
                     break;
             }
