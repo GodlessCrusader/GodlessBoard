@@ -129,7 +129,7 @@ namespace GodlessBoard.Hubs
 
         public async Task UpdateChatAsync(Chat chat, User user, int gameId)
         {
-            await Clients.Group($"game{gameId}").SendAsync("UpdateChat", chat);
+            await Clients.Group($"game{gameId}").SendAsync("UpdateChatState", chat);
         }
 
 
