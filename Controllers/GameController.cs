@@ -23,9 +23,15 @@ namespace GodlessBoard.Controllers
             _jwtHandler = jwtHandler;
         }
      
-        private bool AuthorizeRequest()
+        public List<Claim> Authorize()
         {
-            return true;
+            if (!Request.Headers.Any(x => x.Key == "gboard_signin_token"))
+                return null;
+            var token = Request.Headers.First(x => x.Key == "gboard_signin_token").Value;
+            if (!_jwtHandler.ValidateToken(token))
+                return null;
+
+            return _jwtHandler.GetClaims(token).ToList();
         }
         public string Sync(int id)
         {
