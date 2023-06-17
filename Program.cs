@@ -32,8 +32,12 @@ builder.Services.AddAuthentication(AuthHandler.PolicyName)
 
 var connectionString = builder.Configuration.GetConnectionString("MyDbContextConnection"); ;
 
+
 builder.Services.AddDbContext<MyDbContext>(options =>
     options.UseNpgsql(connectionString));
+
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

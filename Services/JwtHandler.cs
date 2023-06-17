@@ -86,7 +86,7 @@ namespace GodlessBoard.Services
             if (!ValidateToken(token))
                 return null;
             var jwt = new JwtSecurityToken(token);
-            var userLogin = jwt.Claims.First(x => x.Type == ClaimTypes.Name).Value;
+            var userLogin = jwt.Claims.First(x => x.Type == ClaimTypes.Email).Value;
             var user = _dbContext.Users.First(x => x.UserName == userLogin);
             return user;
             
