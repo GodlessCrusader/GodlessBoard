@@ -193,5 +193,14 @@ namespace GodlessBoard.Hubs
             await Clients.Group($"game{gameId}").SendAsync("UpdateChatState", chat);
         }
 
+        public async Task UpdateUserMediaAsync(int userId)
+        {
+
+
+            var media = _dbContext.Media.Where(x => x.OwnerId == userId);
+
+            await Clients.Caller.SendAsync("UpdateUserMedia", media);
+        }
+
     }
 }
