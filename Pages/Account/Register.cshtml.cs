@@ -13,6 +13,7 @@ namespace GodlessBoard.Pages.Account
 {
     public class RegisterModel : PageModel
     {
+        private readonly Auth _auth;
         private readonly HashGenerator _hashGenerator;
         private readonly GodlessBoard.Data.MyDbContext _context;
         [BindProperty]
@@ -35,8 +36,7 @@ namespace GodlessBoard.Pages.Account
                 byte[] passwordSalt = null;
 
                 _hashGenerator.GenerateHash(Input.Password, ref passwordSalt, out passwordHash);
-            
-                _context.Users.Add(new User()
+                var newUser = new User()
                 {
                     UserName = Input.UserName.ToUpper(),
                     DisplayName = Input.DisplayName,
@@ -44,9 +44,10 @@ namespace GodlessBoard.Pages.Account
                     PasswordSalt = passwordSalt,
                     ProfilePicUrl = "../image/defaultUserPic.png",
                     MaxMediaWeight = 9999999
-                });
+                };
+                _context.Users.Add(newUser);
                 _context.SaveChanges();
-                await Auth.Identify(HttpContext, Input.UserName, Input.DisplayName);
+                await _auth.SignInAsync(HttpContext, newUser);
             }
             else
             {
@@ -57,8 +58,9 @@ namespace GodlessBoard.Pages.Account
             return RedirectToPage("/Account/Index");
         }
 
-        public RegisterModel(MyDbContext context, HashGenerator hashGenerator)
+        public RegisterModel(MyDbContext context, HashGenerator hashGenerator, Auth auth)
         {
+            _auth = auth;
             _context = context;
             _hashGenerator = hashGenerator;
         }

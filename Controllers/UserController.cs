@@ -1,8 +1,10 @@
-﻿using GodlessBoard.Data;
+﻿using GameModel;
+using GodlessBoard.Data;
 using GodlessBoard.Models;
 using GodlessBoard.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace GodlessBoard.Controllers
 {
@@ -10,10 +12,12 @@ namespace GodlessBoard.Controllers
     [Route("[controller]")]
     public class UserController : Controller
     {
+        private readonly Auth _auth;
         private readonly MyDbContext _context;
-        public UserController(MyDbContext context)
+        public UserController(MyDbContext context, Auth auth)
         {
             _context = context;
+            _auth = auth;
         }
 
         [HttpGet]
@@ -34,14 +38,14 @@ namespace GodlessBoard.Controllers
 
                     await file.CopyToAsync(fs);
 
-                    var userName = Auth.GetUserName(User.Identity.Name);
+                    var userName = User.Claims.First(x => x.Type == ClaimTypes.Email).Value;
                     var user = (from u in _context.Users
                                 where u.UserName == userName
                                 select u).SingleOrDefault();
                     var media = new Media()
                     {
                         Name = file.Name,
-                        Type = Models.MediaType.Image,
+                        Type = MediaType.Image,
                         Weight = file.Length,
                         Owner = user
                     };

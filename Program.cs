@@ -1,10 +1,14 @@
 using GodlessBoard.Data;
+using GodlessBoard.Hubs;
 using GodlessBoard.Pages.Account;
 using GodlessBoard.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Net;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +17,9 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
     options.KnownProxies.Add(IPAddress.Parse("10.0.0.100"));
 });
 // Add services to the container.
+builder.Services.AddSignalR();
+builder.Services.AddScoped<Auth>();
+builder.Services.AddScoped<JwtHandler>();
 builder.Services.AddSingleton<MediaUploadRouter>();
 builder.Services.AddSingleton<HashGenerator>();
 builder.Services.AddRazorPages();
@@ -20,13 +27,17 @@ builder.Services.AddControllers();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();
-builder.Services.AddAuthentication("GodlessCookie").AddCookie("GodlessCookie", options =>
-options.Cookie.Name = "GodlessCookie"
-); 
+builder.Services.AddAuthentication(AuthHandler.PolicyName)
+    .AddScheme<AuthOptions, AuthHandler>(AuthHandler.PolicyName, null, null);
+
 var connectionString = builder.Configuration.GetConnectionString("MyDbContextConnection"); ;
+
 
 builder.Services.AddDbContext<MyDbContext>(options =>
     options.UseNpgsql(connectionString));
+
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -34,7 +45,7 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseHttpsRedirection();
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    
     app.UseHsts();
 }
 app.UseForwardedHeaders(new ForwardedHeadersOptions
@@ -49,6 +60,7 @@ app.UseAuthorization();
 app.UseAuthentication();
 app.MapRazorPages();
 app.MapBlazorHub();
+
 
 app.UseBlazorFrameworkFiles();
 
@@ -69,9 +81,8 @@ app.UseCors(policy =>
 
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    endpoints.MapDefaultControllerRoute();
+    endpoints.MapHub<GameHub>("/gamehub");
 });
 
 

@@ -1,5 +1,7 @@
 ﻿
 
+using GameModel;
+
 namespace GodlessBoard.Models
 {
     public class Media
@@ -12,10 +14,5 @@ namespace GodlessBoard.Models
         public User Owner { get; set; }
         public long Weight { get; set; }
     }
-    public enum MediaType
-    {
-        Image = 1,
-        Audio = 2
-
-    }
+    
 }

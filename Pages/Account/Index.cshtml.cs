@@ -11,16 +11,17 @@ namespace GodlessBoard.Pages.Account
     {
         public User? CurrentUser { get; set; }
         private readonly MyDbContext _context;
-        public IndexModel(MyDbContext context)
+        private readonly Auth _auth;
+        public IndexModel(MyDbContext context, Auth auth)
         {
             _context = context;
+            _auth = auth;
         }
         public void OnGet()
         {
             if(User.Identity.IsAuthenticated)
             {
-                string userName, displayName;
-                Auth.ParseIdentityName(User.Identity.Name, out userName, out displayName);
+                var userName = User.Claims.First(x => x.Type == ClaimTypes.Email).Value;
                 CurrentUser = (from currentUser in _context.Users
                               where currentUser.UserName == userName
                               select currentUser).SingleOrDefault();

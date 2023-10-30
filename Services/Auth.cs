@@ -1,30 +1,32 @@
 ﻿using GodlessBoard.Models;
 using GodlessBoard.Pages.Account;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Security.Claims;
 
 namespace GodlessBoard.Services
 {
     public class Auth
     {
-        public static async Task Identify(HttpContext httpContext, string userName, string displayName)
+        private readonly JwtHandler _jwtHandler;
+        public Auth(JwtHandler jwtHandler)
         {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, $"{userName.ToUpper()}|{displayName}")
-            };
-            var identity = new ClaimsIdentity(claims, "GodlessCookie");
-            ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(identity);
-            await httpContext.SignInAsync("GodlessCookie", claimsPrincipal);
+            _jwtHandler = jwtHandler;
         }
-
-        public static void ParseIdentityName(string userIdentity, out string Email, out string DisplayName)
+        public Task SignInAsync(HttpContext httpContext, User user)
         {
-            var words = userIdentity.Split('|');
-            Email = words[0];
-            DisplayName = words[1];
+            httpContext.Response.Cookies.Append("gboard_signin_token", _jwtHandler.GenetarateToken(user));
+            return Task.CompletedTask;
         }
-        public static string GetUserName(string userIdentity)
+        public Task SignOutAsync(HttpContext httpContext)
+        {
+            if (!httpContext.Request.Cookies.Any(x => x.Key == "gboard_signin_token"))
+                return Task.CompletedTask;
+            httpContext.Response.Cookies.Delete("gboard_signin_token");
+            return Task.CompletedTask;
+        }
+        
+        public string GetUserName(string userIdentity)
         {
             return userIdentity.Split('|')[0];
         }

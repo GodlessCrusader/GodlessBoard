@@ -4,16 +4,18 @@ using GodlessBoard.Models;
 using GodlessBoard.Services;
 using System.ComponentModel.DataAnnotations;
 using GameModel;
+using System.Security.Claims;
 
 namespace GodlessBoard.Pages.Games
 {
     public class CreateModel : PageModel
     {
         private readonly GodlessBoard.Data.MyDbContext _context;
-
-        public CreateModel(GodlessBoard.Data.MyDbContext context)
+        private readonly Auth _auth;
+        public CreateModel(GodlessBoard.Data.MyDbContext context, Auth auth)
         {
             _context = context;
+            _auth = auth;
         }
 
         public IActionResult OnGet()
@@ -28,7 +30,8 @@ namespace GodlessBoard.Pages.Games
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
-            var owner = _context.Users.Where(u => u.UserName == Auth.GetUserName( User.Identity.Name)).Single();
+            var userName = User.Claims.First(x => x.Type == ClaimTypes.Email).Value;
+            var owner = _context.Users.Where(u => u.UserName == userName).Single();
             var game = new GodlessBoard.Models.Game();
             game.Players = new List<User>();
             game.Players.Add(owner);
@@ -45,7 +48,7 @@ namespace GodlessBoard.Pages.Games
             game.Bio = Game.Bio;
             game.JsonRepresentation = Newtonsoft.Json.JsonConvert.SerializeObject(
                 new GameModel.Game(game.Name,
-                    new GameModel.Player(owner.DisplayName, Role.Owner)));
+                    new Player(owner.DisplayName, owner.UserName, Role.Owner)));
             
             _context.Games.Add(game);
             
