@@ -34,7 +34,7 @@ namespace GodlessBoard.Migrations
 
                     b.HasIndex("PlayersId");
 
-                    b.ToTable("GameUser");
+                    b.ToTable("GameUser", (string)null);
                 });
 
             modelBuilder.Entity("GodlessBoard.Models.ChatMessage", b =>
@@ -64,7 +64,7 @@ namespace GodlessBoard.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Messages");
+                    b.ToTable("Messages", (string)null);
                 });
 
             modelBuilder.Entity("GodlessBoard.Models.Game", b =>
@@ -93,7 +93,7 @@ namespace GodlessBoard.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Games");
+                    b.ToTable("Games", (string)null);
                 });
 
             modelBuilder.Entity("GodlessBoard.Models.Media", b =>
@@ -130,7 +130,7 @@ namespace GodlessBoard.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Media");
+                    b.ToTable("Media", (string)null);
                 });
 
             modelBuilder.Entity("GodlessBoard.Models.User", b =>
@@ -174,7 +174,7 @@ namespace GodlessBoard.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("GodlessBoard.Models.UserGameRole", b =>
@@ -200,7 +200,7 @@ namespace GodlessBoard.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserGameRole");
+                    b.ToTable("UserGameRole", (string)null);
                 });
 
             modelBuilder.Entity("GameUser", b =>

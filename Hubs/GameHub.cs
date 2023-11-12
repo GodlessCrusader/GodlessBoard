@@ -4,7 +4,6 @@ using GodlessBoard.Models;
 using GodlessBoard.Services;
 using Microsoft.AspNetCore.SignalR;
 using System.Security.Claims;
-using System.Web.Http;
 
 namespace GodlessBoard.Hubs
 {
@@ -20,23 +19,24 @@ namespace GodlessBoard.Hubs
             _jwtHandler = jwtHandler;
         }  
         
-        public Task<User> GetUserAsync()
+        public Task<User?> GetUserAsync()
         {
+            User? currentUser = null;
             if (Context.User == null || Context.User.Identity == null || !Context.User.Identity.IsAuthenticated)
-                return null;
+                return Task.FromResult(currentUser);
             
             //Context.Items[Context.Items.Count - 1] = gameId;
             
             if (!Context.User.Claims.Any(x => x.Type == ClaimTypes.Email))
-                return null;
-            
+                return Task.FromResult(currentUser);
+
             var username = Context
                 .User
                 .Claims
                 .Single(x => x.Type == ClaimTypes.Email)
                 .Value;
 
-            var currentUser = _dbContext.Users.SingleOrDefault(x => x.UserName == username);
+            currentUser = _dbContext.Users.SingleOrDefault(x => x.UserName == username);
 
             return Task.FromResult(currentUser);
         }
@@ -60,7 +60,6 @@ namespace GodlessBoard.Hubs
                     await UpdateBoardAsync(game, currentUser);
                     break;
                 case GameModel.Game.ModificationType.Chat:
-                   
                     break;
             }
                 
@@ -193,11 +192,13 @@ namespace GodlessBoard.Hubs
             await Clients.Group($"game{gameId}").SendAsync("UpdateChatState", chat);
         }
 
-        public async Task UpdateUserMediaAsync(int userId)
+        public async Task UpdateUserMediaAsync()
         {
+            var user = await GetUserAsync();
 
+            if (user != null) { await Clients.Caller.SendAsync("UpdateUserMedia", null); return; }
 
-            var media = _dbContext.Media.Where(x => x.OwnerId == userId);
+            var media = _dbContext.Media.Where(x => x.OwnerId == user.Id);
 
             await Clients.Caller.SendAsync("UpdateUserMedia", media);
         }
