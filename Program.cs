@@ -77,12 +77,12 @@ app.UseCors(policy =>
            
 ); ; ;
 
-
+//app.MapHub<GameHub>("gamehub");
 
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapDefaultControllerRoute();
-    endpoints.MapHub<GameHub>("/gamehub");
+    endpoints.MapHub<GameHub>("gamehub");
 });
 
 

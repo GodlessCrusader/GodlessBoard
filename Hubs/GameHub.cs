@@ -63,8 +63,6 @@ namespace GodlessBoard.Hubs
                     break;
             }
                 
-
-
         }
 
         public async Task RecieveMessageAsync(int gameId, string authToken, TextMessage message)
