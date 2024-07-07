@@ -60,7 +60,7 @@ app.UseAuthorization();
 app.UseAuthentication();
 app.MapRazorPages();
 app.MapBlazorHub();
-
+app.MapHub<GameHub>("/gamehub");
 
 app.UseBlazorFrameworkFiles();
 
